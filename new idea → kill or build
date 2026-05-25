@@ -1,0 +1,39 @@
+ Here's the canonical "new idea → kill or build" workflow with what's available today:
+
+  1. Capture the idea (2 min)
+
+  The fastest entry point is Conversations. Open one with intent set to product_idea (defaults to explore today, switch via the in-thread settings). Paste the idea — a sentence is enough. The brain answers
+   grounded in your KB: does this overlap a bet you already have? Do the load-bearing assumptions show up in your corpus? Use this turn purely as a sniff-test.
+
+  If the idea arrives as a written doc/deck rather than a sentence, upload it under Documents first — the graph rebuilds in ~60s/PDF and the conversation will pull from it.
+
+  2. Test if it's worth building (5–10 min)
+
+  This is where Playbooks earn their keep. Two paths:
+
+  - Quick decisive answer → Run Discover product opportunities. Hit 🔮 Simulate from the conversation to send the scenario in, or open Playbooks directly. This single playbook does: surface candidate
+  framings → ground in historical analogues → pressure-test the top idea → 3-persona debate (Bull/Bear/Customer, 2 rounds) → technical feasibility assessment → synthesize an OpportunityScan artifact. The
+  TL;DR + highlight strip gives you a yes/no/maybe in 30 seconds; the sections give the rationale.
+  - Stress-test before committing → Chain Pre-mortem on a plan on the OpportunityScan (it accepts OpportunityScan as a source artifact). Imagine the failure, red-team it, simulate the
+  bear/customer/competitor view. If it survives this, the idea is real.
+
+  3. Move to next steps
+
+  Each playbook's artifact type feeds the next via the kickoff form's "source artifact" picker — that's the chaining:
+
+  ┌─────────────────────────────────────────────┬────────────────────────────────┬──────────────────────────────────────────┐
+  │               If output says…               │         Next playbook          │                 Produces                 │
+  ├─────────────────────────────────────────────┼────────────────────────────────┼──────────────────────────────────────────┤
+  │ "Worth building, build/buy/partner unclear" │ Decide build vs buy vs partner │ BuildBuyDecision                         │
+  ├─────────────────────────────────────────────┼────────────────────────────────┼──────────────────────────────────────────┤
+  │ "Worth building, clear go"                  │ Draft a PRD                    │ PRDDraft (engineering-ready)             │
+  ├─────────────────────────────────────────────┼────────────────────────────────┼──────────────────────────────────────────┤
+  │ "Strategy needs sharpening first"           │ Pressure-test a strategy       │ StrategyBrief                            │
+  ├─────────────────────────────────────────────┼────────────────────────────────┼──────────────────────────────────────────┤
+  │ "PRD done, ready to ship"                   │ Plan a launch (GTM)            │ LaunchPlan with T-30/T-0/T+30 milestones │
+  └─────────────────────────────────────────────┴────────────────────────────────┴──────────────────────────────────────────┘
+
+  Everything compounds — the chained artifacts cite each other, sit in the Artifacts tab, and any contested claim can be promoted to a Refinement so the brain doesn't have to relearn it.
+
+  Where the product is weak for your use case: "from anywhere in the company" today means someone has to open the app and start a conversation or playbook. There's no inbound channel (Slack ingest, email,
+  /idea webhook, browser extension). If that matters, a small /api/ideas POST endpoint that creates a conversation with the idea text pre-seeded would close the gap — ~30 min of work. Want me to build it?

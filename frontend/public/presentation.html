@@ -1,0 +1,1664 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1280" />
+  <title>InnoBrain — A Knowledge Brain for Strategic Work</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Fraunces:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <!-- Reveal.js print stylesheet; loaded only when ?print-pdf is in the URL. -->
+  <script>
+    if (window.location.search.match(/print-pdf/gi)) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/css/print/pdf.css';
+      document.head.appendChild(link);
+    }
+  </script>
+  <style>
+    /* ============================================================
+       InnoBrain deck — dark, restrained, accent-led.
+       Type: Inter for UI, Fraunces for headlines, JetBrains for code.
+       Strong system-font fallbacks so the deck still looks right
+       when Google Fonts isn't reachable (offline / saved-to-file).
+       ============================================================ */
+    :root {
+      --bg: #0b0f1a;
+      --bg-2: #121828;
+      --panel: #1a2236;
+      --border: #233048;
+      --text: #e6ebf5;
+      --text-dim: #94a3b8;
+      --accent: #818cf8;
+      --accent-2: #34d399;
+      --warn: #fbbf24;
+      --danger: #fb7185;
+      --cyan: #67e8f9;
+      --pink: #f472b6;
+      --purple: #a78bfa;
+    }
+    html, body { background: var(--bg); color: var(--text); }
+    .reveal {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, sans-serif;
+      font-weight: 400;
+      letter-spacing: -0.005em;
+      font-size: 28px;
+    }
+    .reveal .slides { text-align: left; }
+    .reveal section {
+      padding: 44px 68px;
+      box-sizing: border-box;
+      height: 100%;
+    }
+    .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+      font-family: "Fraunces", "Georgia", "Times New Roman", serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-transform: none;
+      line-height: 1.1;
+    }
+    .reveal h1 { font-size: 76px; font-weight: 900; margin-bottom: 16px; line-height: 1.05; }
+    .reveal h2 { font-size: 46px; margin-bottom: 18px; line-height: 1.1; }
+    .reveal h3 { font-size: 28px; margin-bottom: 12px; color: var(--accent); font-family: "Inter", system-ui, sans-serif; font-weight: 700; letter-spacing: -0.01em; }
+    .reveal p { line-height: 1.55; color: var(--text); }
+    .reveal strong { color: var(--text); font-weight: 600; }
+    .reveal em { color: var(--accent); font-style: normal; font-weight: 600; }
+    .reveal code { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; background: var(--panel); padding: 2px 8px; border-radius: 5px; font-size: 0.85em; color: var(--accent); }
+    .reveal ul, .reveal ol { margin-left: 22px; }
+    .reveal li { margin-bottom: 10px; line-height: 1.5; color: var(--text); }
+    .reveal td, .reveal th { color: var(--text); }
+    .reveal a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+
+    .eyebrow {
+      display: inline-block;
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .lead { font-size: 28px; line-height: 1.4; color: var(--text-dim); max-width: 32ch; }
+    .sublead { font-size: 20px; line-height: 1.5; color: var(--text-dim); }
+
+    /* Title slide */
+    .title-slide { display: flex; flex-direction: column; justify-content: center; }
+    .title-slide h1 .accent { color: var(--accent); }
+    .title-slide .tagline { font-size: 24px; color: var(--text-dim); margin-top: 10px; max-width: 44ch; line-height: 1.4; }
+    .title-slide .meta { margin-top: 40px; font-size: 13px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+    .logo-dot { display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); vertical-align: middle; margin-right: 14px; box-shadow: 0 0 60px 6px rgba(129,140,248,0.5); }
+
+    /* Three-card layout */
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 36px; }
+    .card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 26px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card .icon { font-size: 40px; line-height: 1; margin-bottom: 18px; display: block; }
+    .card h4 { font-family: "Inter", system-ui, sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; color: var(--text); }
+    .card p { font-size: 17px; color: var(--text-dim); line-height: 1.5; margin: 0; }
+    .card.accent { border-left: 3px solid var(--accent); }
+    .card.green  { border-left: 3px solid var(--accent-2); }
+    .card.amber  { border-left: 3px solid var(--warn); }
+    .card.pink   { border-left: 3px solid var(--pink); }
+    .card.cyan   { border-left: 3px solid var(--cyan); }
+    .card.purple { border-left: 3px solid var(--purple); }
+
+    /* Two-column layout */
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .cols.narrow-left { grid-template-columns: 0.7fr 1fr; }
+    .cols.narrow-right { grid-template-columns: 1fr 0.7fr; }
+
+    /* Chip / pill / badge */
+    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(129,140,248,0.18); color: var(--accent); letter-spacing: 0.02em; }
+    .pill.green { background: rgba(52,211,153,0.18); color: var(--accent-2); }
+    .pill.amber { background: rgba(251,191,36,0.18); color: var(--warn); }
+    .pill.red   { background: rgba(251,113,133,0.18); color: var(--danger); }
+    .pill.cyan  { background: rgba(103,232,249,0.18); color: var(--cyan); }
+    .pill.pink  { background: rgba(244,114,182,0.18); color: var(--pink); }
+    .pill.purple{ background: rgba(167,139,250,0.18); color: var(--purple); }
+
+    /* Suggestion chip */
+    .ui-chip {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      display: flex; flex-direction: column; gap: 6px;
+      line-height: 1.55;
+      font-size: 17px;
+    }
+    .ui-chip .tag {
+      align-self: flex-start;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.05em;
+      text-transform: uppercase; padding: 2px 8px; border-radius: 4px;
+    }
+    .ui-chip .tag.kb { background: rgba(129,140,248,0.20); color: #a5b4fc; }
+    .ui-chip .tag.wild { background: rgba(251,191,36,0.18); color: var(--warn); }
+    .ui-chip .body { color: var(--text); font-size: 18px; }
+
+    /* Data table for the audit slide */
+    .audit-table {
+      width: 100%; border-collapse: collapse; margin-top: 10px;
+      background: var(--bg-2); border-radius: 10px; overflow: hidden;
+      font-size: 14px;
+    }
+    .audit-table th {
+      background: var(--panel);
+      color: var(--text-dim) !important;
+      font-weight: 600;
+      text-align: left;
+      padding: 7px 14px;
+      text-transform: uppercase; letter-spacing: 0.08em; font-size: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .audit-table td {
+      padding: 7px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .audit-table tr:last-child td { border-bottom: none; }
+    .audit-table .status { white-space: nowrap; font-weight: 600; font-size: 12px; }
+
+    /* Big stat */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 40px; }
+    .stat { text-align: center; }
+    .stat .n { font-family: "Fraunces", "Georgia", serif; font-size: 76px; font-weight: 900; line-height: 1; color: var(--accent); letter-spacing: -0.04em; }
+    .stat .label { font-size: 15px; color: var(--text-dim); margin-top: 8px; }
+
+    /* Checklist */
+    .checklist { list-style: none; margin-left: 0; }
+    .checklist li { padding-left: 32px; position: relative; font-size: 18px; margin-bottom: 12px; }
+    .checklist li::before {
+      content: "✓"; position: absolute; left: 0; top: 0;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(52,211,153,0.22); color: var(--accent-2);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800;
+    }
+
+    /* Quotes */
+    .quote {
+      font-family: "Fraunces", "Georgia", serif; font-size: 36px; font-weight: 500;
+      line-height: 1.3; color: var(--text);
+      max-width: 26ch; letter-spacing: -0.01em;
+    }
+    .quote .by { display: block; font-family: "Inter", system-ui, sans-serif; font-size: 16px; font-weight: 600; color: var(--text-dim); margin-top: 24px; letter-spacing: 0.02em; }
+
+    /* Center helpers */
+    .center { text-align: center; }
+    .v-center { display: flex; flex-direction: column; justify-content: center; height: 100%; }
+
+    /* Progress bar + controls accent */
+    .reveal .progress { color: var(--accent); height: 4px; }
+    .reveal .controls { color: var(--accent); }
+
+    /* Field notes */
+    .field-notes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 24px;
+      margin-top: 4px;
+    }
+    .field-notes .note {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 7px 0;
+      border-top: 1px solid var(--border);
+    }
+    .field-notes .note-num {
+      font-family: "Fraunces", "Georgia", serif;
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--accent);
+      letter-spacing: -0.04em;
+      padding-top: 3px;
+    }
+    .field-notes .note-body strong {
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      letter-spacing: -0.005em;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .field-notes .note-body p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text-dim);
+    }
+    .field-notes .note em {
+      color: var(--accent);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    /* SVG diagrams */
+    svg.diagram { display: block; margin: 0 auto; width: 100%; max-width: 720px; }
+    svg .label { font-family: "Inter", system-ui, sans-serif; font-size: 14px; font-weight: 600; fill: var(--text); }
+    svg .sublabel { font-family: "Inter", system-ui, sans-serif; font-size: 12px; fill: var(--text-dim); }
+    svg .stroke { stroke: var(--border); stroke-width: 1.5; fill: var(--bg-2); }
+    svg .stroke-accent { stroke: var(--accent); }
+    svg .arrow { stroke: var(--text-dim); stroke-width: 1.5; fill: none; }
+
+    /* === Download button (floating, hidden in print) === */
+    .dl-btn {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 9999;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(26, 34, 54, 0.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 999px;
+      color: var(--text);
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .dl-btn:hover {
+      border-left-color: var(--accent-2);
+      transform: translateY(-1px);
+    }
+    .dl-btn .ico {
+      width: 14px; height: 14px;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--accent);
+      font-size: 14px;
+    }
+    .dl-hint {
+      position: fixed;
+      right: 18px;
+      bottom: 64px;
+      max-width: 280px;
+      padding: 12px 14px;
+      background: rgba(26, 34, 54, 0.96);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-dim);
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: 12px;
+      line-height: 1.5;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    .dl-hint.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .dl-hint strong { color: var(--text); display: block; margin-bottom: 4px; }
+    .dl-hint code { font-size: 11px; padding: 1px 5px; }
+
+    /* === Print / PDF tweaks === */
+    @media print {
+      .reveal section { padding: 40px 60px; }
+      .dl-btn, .dl-hint { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating "Download as PDF" button (hidden when printing) -->
+  <div class="dl-hint" id="dlHint">
+    <strong>Save as PDF</strong>
+    The page will reload in print layout, then your browser's print dialog will open. Pick <em>Save as PDF</em>.
+  </div>
+  <button class="dl-btn" id="dlBtn" title="Save this deck as a PDF">
+    <span class="ico">⬇</span>
+    Download PDF
+  </button>
+
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- =============================================================
+           1. TITLE
+           ============================================================= -->
+      <section class="title-slide" data-background-color="#0b0f1a">
+        <div>
+          <div class="eyebrow"><span class="logo-dot"></span>InnoBrain</div>
+          <h1>The brain<br>your strategy<br><span class="accent">deserves.</span></h1>
+          <p class="tagline">Powers strategic work — by composing your team's docs, expertise, and simulated futures into shared momentum.</p>
+          <div class="meta">Internal pitch · Q2 2026 · v2</div>
+        </div>
+      </section>
+
+      <!-- =============================================================
+           2. FIELD NOTES
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Field notes</div>
+        <h2 style="margin-bottom: 10px;">What I kept seeing.</h2>
+        <p class="sublead" style="margin-bottom: 14px; max-width: 56ch; font-size: 17px;">
+          Watching how teams <em>actually</em> do strategic work, the same nine patterns kept showing up.
+        </p>
+        <div class="field-notes">
+          <div class="note">
+            <div class="note-num">01</div>
+            <div class="note-body">
+              <strong>Fragmented docs.</strong>
+              <p>Spread across people, drives, decks, threads. The most useful slide is on someone else's laptop.</p>
+            </div>
+          </div>
+          <div class="note">
+            <div class="note-num">02</div>
+            <div class="note-body">
+              <strong>No real source of truth.</strong>
+              <p>Five docs cite five different numbers. Nobody knows which one we actually believe.</p>
+            </div>
+          </div>
+          <div class="note">
+            <div class="note-num">03</div>
+            <div class="note-body">
+              <strong>Everyone has a different view.</strong>
+              <p>Each person carries their own private version of "what we've decided." No reconciliation happens.</p>
+            </div>
+          </div>
+          <div class="note">
+            <div class="note-num">04</div>
+            <div class="note-body">
+              <strong>Stale info scattered everywhere.</strong>
+              <p>Last year's numbers, last quarter's roadmap, last cycle's deadlines — still flying around in this year's decks.</p>
+            </div>
+          </div>
+          <div class="note">
+            <div class="note-num">05</div>
+            <div class="note-body">
+              <strong>No shared lens for opportunity.</strong>
+              <p>Hunting new bets, everyone optimizes in a different direction — no shared rubric about who we are, what fits, what doesn't.</p>
+            </div>
+          </div>
+          <div class="note">
+            <div class="note-num">06</div>
+            <div class="note-body">
+              <strong>Expertise stays siloed.</strong>
+              <p>VPs know the company. PMs know the market. Engineers know what's buildable. Nobody assembles the picture.</p>
+            </div>
+          </div>
+          <div class="note" style="grid-column: 1 / -1;">
+            <div class="note-num">07</div>
+            <div class="note-body">
+              <strong>Brainstorms die in long docs.</strong>
+              <p>Each person prompts ChatGPT alone, dumps a four-page doc nobody else reads. We'd be better served by a <em>collaborative session</em> where everyone guides the LLM together, reviews and refines on top of <em>shared rules of the game</em>.</p>
+            </div>
+          </div>
+          <div class="note" style="grid-column: 1 / -1;">
+            <div class="note-num">08</div>
+            <div class="note-body">
+              <strong>Everyone imagines a different future.</strong>
+              <p>Five people in a room, five private pictures of what happens next. The board sees one upside, engineers see one downside, the customer team sees something else entirely — and none of these futures ever get reconciled into a <em>shared one</em> the whole team can act on.</p>
+            </div>
+          </div>
+          <div class="note" style="grid-column: 1 / -1;">
+            <div class="note-num">09</div>
+            <div class="note-body">
+              <strong>High-potential ideas vanish in the chaos.</strong>
+              <p>The next big bet gets mentioned in passing on a Tuesday standup, captured by nobody, forgotten by Friday. The ideas that survive in our org are the ones loud enough to fight through the noise — <em>not necessarily the right ones</em>.</p>
+            </div>
+          </div>
+        </div>
+        <p style="position: absolute; bottom: 14px; left: 68px; right: 68px; font-family: 'Fraunces', serif; font-size: 17px; font-style: italic; color: var(--text-dim); margin: 0; text-align: center;">
+          These aren't different problems. They're symptoms of one missing thing.
+        </p>
+      </section>
+
+      <!-- =============================================================
+           3. THE PROBLEM
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">The problem</div>
+        <h2>Strategy work doesn't compound.</h2>
+        <p class="lead" style="margin-bottom: 28px;">Knowledge fragments. Expertise siloes. Futures diverge.</p>
+        <div class="cards" style="grid-template-columns: repeat(5, 1fr); gap: 14px;">
+          <div class="card pink">
+            <span class="icon">📄</span>
+            <h4>Docs pile faster than anyone reads</h4>
+            <p>20 PDFs, 5 decks, 3 board memos. The insight you need is on slide&nbsp;14 of one you've never opened.</p>
+          </div>
+          <div class="card amber">
+            <span class="icon">🧠</span>
+            <h4>Tribal knowledge evaporates</h4>
+            <p>The senior PM knows why a deal closed. Nobody wrote it down. The senior PM is on PTO.</p>
+          </div>
+          <div class="card cyan">
+            <span class="icon">🔁</span>
+            <h4>Every effort restarts from zero</h4>
+            <p>Same competitive scan, same pre-mortem, same build-vs-buy — rebuilt every quarter.</p>
+          </div>
+          <div class="card green">
+            <span class="icon">🔮</span>
+            <h4>Everyone imagines a different future</h4>
+            <p>Five people, five private pictures of what happens next. Never reconciled — until reality picks one.</p>
+          </div>
+          <div class="card accent">
+            <span class="icon">💡</span>
+            <h4>High-potential ideas vanish in the chaos</h4>
+            <p>The next big bet gets mentioned on a Tuesday standup, captured by nobody, forgotten by Friday. The loud ideas survive — <em>not necessarily the right ones</em>.</p>
+          </div>
+        </div>
+        <p style="font-size: 22px; color: var(--text-dim); margin-top: 36px;">Result: <em>opinions, not options. Decks, not decisions.</em></p>
+      </section>
+
+      <!-- =============================================================
+           4. WHAT IS INNOBRAIN
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">What it is</div>
+        <h2>A workspace<br>where knowledge compounds.</h2>
+        <div class="cols" style="margin-top: 40px;">
+          <div>
+            <p style="font-size: 24px; line-height: 1.5; color: var(--text); margin-bottom: 24px;">
+              Drop in any document. InnoBrain extracts a <em>knowledge graph</em>, lets you shape it with your team's experience, and turns it into <em>typed strategic artifacts</em> via Playbooks.
+            </p>
+            <p style="font-size: 20px; color: var(--text-dim); line-height: 1.5;">
+              Briefs, build-vs-buy decisions, PRDs, architecture docs, delivery plans, launch kits, opportunity scans — every one citable, refinable, comparable across time.
+            </p>
+          </div>
+          <div>
+            <svg class="diagram" viewBox="0 0 480 360" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(40, 40)">
+                <rect class="stroke" x="0" y="0" width="100" height="80" rx="10"/>
+                <text x="50" y="36" text-anchor="middle" class="label">PDFs</text>
+                <text x="50" y="56" text-anchor="middle" class="label">Slack</text>
+                <text x="50" y="76" text-anchor="middle" class="label">Repos</text>
+              </g>
+              <g transform="translate(190, 30)">
+                <rect class="stroke stroke-accent" x="0" y="0" width="120" height="100" rx="10" fill="#1a2236"/>
+                <circle cx="30" cy="40" r="7" fill="#34d399"/>
+                <circle cx="90" cy="30" r="8" fill="#818cf8"/>
+                <circle cx="60" cy="70" r="9" fill="#fbbf24"/>
+                <circle cx="100" cy="80" r="6" fill="#f472b6"/>
+                <line x1="30" y1="40" x2="90" y2="30" stroke="#94a3b8" stroke-width="1"/>
+                <line x1="30" y1="40" x2="60" y2="70" stroke="#94a3b8" stroke-width="1"/>
+                <line x1="60" y1="70" x2="90" y2="30" stroke="#94a3b8" stroke-width="1"/>
+                <line x1="60" y1="70" x2="100" y2="80" stroke="#94a3b8" stroke-width="1"/>
+                <text x="60" y="120" text-anchor="middle" class="sublabel">Knowledge graph</text>
+              </g>
+              <g transform="translate(360, 40)">
+                <rect class="stroke stroke-accent" x="0" y="0" width="90" height="20" rx="4" fill="#1a2236"/>
+                <rect class="stroke stroke-accent" x="0" y="30" width="90" height="20" rx="4" fill="#1a2236"/>
+                <rect class="stroke stroke-accent" x="0" y="60" width="90" height="20" rx="4" fill="#1a2236"/>
+                <text x="45" y="100" text-anchor="middle" class="sublabel">Artifacts</text>
+              </g>
+              <path class="arrow" d="M 145 80 L 185 80" marker-end="url(#arr)"/>
+              <path class="arrow" d="M 315 80 L 355 80" marker-end="url(#arr)"/>
+              <g transform="translate(190, 180)">
+                <rect x="0" y="0" width="120" height="60" rx="10" fill="rgba(244, 114, 182, 0.12)" stroke="#f472b6" stroke-width="1.5" stroke-dasharray="4 3"/>
+                <text x="60" y="28" text-anchor="middle" class="label" fill="#f472b6">+ your team's</text>
+                <text x="60" y="46" text-anchor="middle" class="label" fill="#f472b6">experience</text>
+              </g>
+              <path class="arrow" d="M 250 180 L 250 130" stroke="#f472b6"/>
+              <g transform="translate(150, 280)">
+                <rect class="stroke stroke-accent" x="0" y="0" width="200" height="50" rx="10" fill="#1a2236"/>
+                <text x="100" y="30" text-anchor="middle" class="label">Playbooks · LLM · Rubrics</text>
+              </g>
+              <defs>
+                <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+                </marker>
+              </defs>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================================
+           5. CONVERSATIONS — the everyday surface
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">The everyday surface</div>
+        <h2>Ask. <span style="color: var(--accent);">Cite.</span> Save.</h2>
+        <p class="sublead" style="margin-bottom: 28px; max-width: 56ch;">
+          The fast path into the brain. Natural-language questions, answers grounded in <em>your</em> graph — and one click turns any answer into a durable KB fact.
+        </p>
+        <div class="cols" style="grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: start;">
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="ui-chip">
+              <span class="tag kb">📚 you ask</span>
+              <div class="body" style="font-size: 17px;">Which of our 2026 bets best fits the Q3 launch window given our current platform constraints?</div>
+            </div>
+            <div class="ui-chip" style="border-left: 3px solid var(--accent-2);">
+              <span class="tag kb" style="background: rgba(52,211,153,0.20); color: #6ee7b7;">📐 brain answers</span>
+              <div class="body" style="font-size: 16px;">Two candidates stand out — the compliance SKU has clearer demand signal <em>(opp-scan §3, p.14)</em>, while the on-call layer reuses 80% of existing platform <em>(arch-doc p.8)</em>…</div>
+              <div style="display: flex; gap: 8px; margin-top: 6px;">
+                <span class="pill green" style="font-size: 11px; padding: 2px 10px;">💡 save as KB fact</span>
+                <span class="pill pink" style="font-size: 11px; padding: 2px 10px;">🔮 simulate in ForeSight</span>
+                <span class="pill purple" style="font-size: 11px; padding: 2px 10px;">📋 run a Playbook</span>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 18px; padding-top: 4px;">
+            <div>
+              <div class="pill" style="margin-bottom: 6px;">📐 Rubric + 🧠 Memory applied</div>
+              <p style="margin: 0; font-size: 16px; color: var(--text-dim);">Every answer is framed by your team's rules and remembers what you've already established. <strong>No re-priming.</strong></p>
+            </div>
+            <div>
+              <div class="pill green" style="margin-bottom: 6px;">💡 Save as KB fact</div>
+              <p style="margin: 0; font-size: 16px; color: var(--text-dim);">One click on any answer captures it as a refinement — attributed, reversible, cited from then on.</p>
+            </div>
+            <div>
+              <div class="pill cyan" style="margin-bottom: 6px;">🧵 Parallel threads, parallel intents</div>
+              <p style="margin: 0; font-size: 16px; color: var(--text-dim);">Each conversation keeps its own context, intent, rubric, and inference strategy (<em>reflection · CoVe · best-of-3</em>).</p>
+            </div>
+            <div>
+              <div class="pill pink" style="margin-bottom: 6px;">🔮 Promote to ForeSight</div>
+              <p style="margin: 0; font-size: 16px; color: var(--text-dim);">A scenario worth a deeper look? Pipe it into ForeSight — eleven voices argue it across five horizons.</p>
+            </div>
+          </div>
+        </div>
+        <p style="position: absolute; bottom: 18px; left: 68px; font-family: 'Fraunces', serif; font-size: 17px; font-style: italic; color: var(--text-dim); margin: 0;">
+          Where exploration begins. ForeSight and Playbooks are where it lands.
+        </p>
+      </section>
+
+      <!-- =============================================================
+           6. PLAYBOOKS — the core idea
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">The core idea</div>
+        <h2>Don't ask a chatbot.<br>Run a <span style="color: var(--accent);">Playbook</span>.</h2>
+        <p class="sublead" style="margin-bottom: 36px; max-width: 32ch;">
+          A Playbook is a fixed chain of LLM steps that emits a <strong>typed artifact</strong> — citable, versioned, refinable from reviewer comments, ready for the next meeting.
+        </p>
+        <svg class="diagram" viewBox="0 0 1100 220" xmlns="http://www.w3.org/2000/svg" style="max-width: 1100px;">
+          <defs>
+            <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#818cf8"/>
+            </marker>
+          </defs>
+          <g transform="translate(20, 70)">
+            <rect class="stroke" width="160" height="80" rx="10" stroke="#818cf8" stroke-width="2"/>
+            <text x="80" y="35" text-anchor="middle" class="label" fill="#818cf8" font-size="13">INVENTORY</text>
+            <text x="80" y="58" text-anchor="middle" class="sublabel">themes in KB</text>
+          </g>
+          <path class="arrow" d="M 190 110 L 215 110" stroke="#818cf8" stroke-width="2" marker-end="url(#arr2)"/>
+          <g transform="translate(225, 70)">
+            <rect class="stroke" width="160" height="80" rx="10" stroke="#818cf8" stroke-width="2"/>
+            <text x="80" y="35" text-anchor="middle" class="label" fill="#818cf8" font-size="13">FIND GAPS</text>
+            <text x="80" y="58" text-anchor="middle" class="sublabel">white space + bridges</text>
+          </g>
+          <path class="arrow" d="M 395 110 L 420 110" stroke="#818cf8" stroke-width="2" marker-end="url(#arr2)"/>
+          <g transform="translate(430, 70)">
+            <rect class="stroke" width="160" height="80" rx="10" stroke="#818cf8" stroke-width="2"/>
+            <text x="80" y="35" text-anchor="middle" class="label" fill="#818cf8" font-size="13">WEB SCAN</text>
+            <text x="80" y="58" text-anchor="middle" class="sublabel">outside the corpus</text>
+          </g>
+          <path class="arrow" d="M 600 110 L 625 110" stroke="#818cf8" stroke-width="2" marker-end="url(#arr2)"/>
+          <g transform="translate(635, 50)">
+            <rect class="stroke" width="180" height="120" rx="10" stroke="#fbbf24" stroke-width="2"/>
+            <text x="90" y="34" text-anchor="middle" class="label" fill="#fbbf24" font-size="13">DEBATE</text>
+            <text x="90" y="56" text-anchor="middle" class="sublabel">Bull / Bear</text>
+            <text x="90" y="74" text-anchor="middle" class="sublabel">Customer / Competitor</text>
+            <text x="90" y="100" text-anchor="middle" class="sublabel" font-style="italic">multi-round</text>
+          </g>
+          <path class="arrow" d="M 825 110 L 850 110" stroke="#818cf8" stroke-width="2" marker-end="url(#arr2)"/>
+          <g transform="translate(860, 70)">
+            <rect class="stroke" width="180" height="80" rx="10" stroke="#34d399" stroke-width="2" fill="rgba(52,211,153,0.08)"/>
+            <text x="90" y="35" text-anchor="middle" class="label" fill="#34d399" font-size="13">SYNTHESIZE</text>
+            <text x="90" y="58" text-anchor="middle" class="sublabel">📄 Opportunity Brief</text>
+          </g>
+        </svg>
+        <div class="stats" style="margin-top: 32px;">
+          <div class="stat"><div class="n">17</div><div class="label">built-in Playbooks</div></div>
+          <div class="stat"><div class="n">17</div><div class="label">typed artifact kinds</div></div>
+          <div class="stat"><div class="n">~5m</div><div class="label">scenario → brief</div></div>
+          <div class="stat"><div class="n">100%</div><div class="label">cited &amp; versioned</div></div>
+        </div>
+      </section>
+
+      <!-- =============================================================
+           7. PLAYBOOK CATALOG — strategy track
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">What ships in the box · Strategy track</div>
+        <h2 style="margin-bottom: 8px;">Ten Playbooks for the strategy team.</h2>
+        <p class="sublead" style="margin-bottom: 18px; font-size: 16px;">Every step grounded in your KB. Every output a typed, citable artifact.</p>
+        <div class="cards" style="grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 14px;">
+          <div class="card accent" style="padding: 14px;">
+            <h4 style="font-size: 15px;">🔭 Find unexplored ideas</h4>
+            <p style="font-size: 12px;">Inventory themes, surface white-space + bridges, scan external signals, debate top picks.</p>
+          </div>
+          <div class="card accent" style="padding: 14px;">
+            <h4 style="font-size: 15px;">🎯 Discover opportunities</h4>
+            <p style="font-size: 12px;">Surface candidates, ground in analogues, debate top one (Bull/Bear/Customer).</p>
+          </div>
+          <div class="card accent" style="padding: 14px;">
+            <h4 style="font-size: 15px;">🧪 Pressure-test a strategy</h4>
+            <p style="font-size: 12px;">Explore tensions, evaluate balance, red-team adversarially, 4-persona debate.</p>
+          </div>
+          <div class="card accent" style="padding: 14px;">
+            <h4 style="font-size: 15px;">🎓 Product Strategy Director</h4>
+            <p style="font-size: 12px;">Director-grade synthesis — vision, bets, tradeoffs, sequencing.</p>
+          </div>
+          <div class="card accent" style="padding: 14px;">
+            <h4 style="font-size: 15px;">⚖️ Build vs Buy vs Partner</h4>
+            <p style="font-size: 12px;">Three paths, competitor scan, pre-mortem, Investor/Customer/Competitor debate.</p>
+          </div>
+          <div class="card accent" style="padding: 14px;">
+            <h4 style="font-size: 15px;">📋 Draft a PRD</h4>
+            <p style="font-size: 12px;">Spec + user stories + metrics + risks + feasibility. Engineering-ready handoff.</p>
+          </div>
+          <div class="card accent" style="padding: 14px;">
+            <h4 style="font-size: 15px;">🚀 Plan a launch (GTM)</h4>
+            <p style="font-size: 12px;">ICP → positioning → pricing → channels → battlecard. Full launch kit.</p>
+          </div>
+          <div class="card cyan" style="padding: 14px;">
+            <h4 style="font-size: 15px;">🧬 Codebase health</h4>
+            <p style="font-size: 12px;">Architecture + quality + deps + tests + security on any ingested repo.</p>
+          </div>
+          <div class="card green" style="padding: 14px;">
+            <h4 style="font-size: 15px;">🩺 Audit KB freshness</h4>
+            <p style="font-size: 12px;">Inventory load-bearing claims, verify against web, output paste-ready corrections.</p>
+          </div>
+          <div class="card pink" style="padding: 14px;">
+            <h4 style="font-size: 15px;">🧯 Pre-mortem on a plan</h4>
+            <p style="font-size: 12px;">Imagine it failed + red-team + quick simulation. Stress-test before commitment.</p>
+          </div>
+        </div>
+        <p style="position: absolute; bottom: 16px; left: 68px; font-family: 'Fraunces', serif; font-size: 16px; font-style: italic; color: var(--text-dim); margin: 0;">
+          And — on top — a full <span style="color: var(--accent);">brownfield AI dev chain</span> that turns a strategy into shipped code. Next slide.
+        </p>
+      </section>
+
+      <!-- =============================================================
+           8. BROWNFIELD AI DEV CHAIN — new in v2
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">What ships in the box · AI dev track <span class="pill purple" style="margin-left: 8px;">new</span></div>
+        <h2 style="margin-bottom: 6px;">From idea to shipped code,<br><span style="color: var(--accent);">seven typed steps.</span></h2>
+        <p class="sublead" style="margin-bottom: 14px; max-width: 64ch; font-size: 16px;">
+          The brownfield chain takes any idea ingested into the KB and walks it through the entire AI-led product-build flow — each stage grounded in the codebase you uploaded, each output a typed artifact the next stage consumes.
+        </p>
+        <svg viewBox="0 0 1140 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 1140px;">
+          <defs>
+            <marker id="arrBF" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#a78bfa"/>
+            </marker>
+          </defs>
+          <!-- Seven step boxes -->
+          <g font-family="Inter" font-size="11" font-weight="700">
+            <g transform="translate(8, 60)">
+              <rect width="140" height="80" rx="10" fill="#1a2236" stroke="#a78bfa" stroke-width="2"/>
+              <text x="70" y="22" text-anchor="middle" font-size="10" fill="#a78bfa">1 · IDEA</text>
+              <text x="70" y="42" text-anchor="middle" font-size="11" fill="#e6ebf5">Refine an idea</text>
+              <text x="70" y="60" text-anchor="middle" font-size="10" fill="#94a3b8">→ IdeaRefinement</text>
+            </g>
+            <path d="M 150 100 L 168 100" stroke="#a78bfa" stroke-width="2" fill="none" marker-end="url(#arrBF)"/>
+            <g transform="translate(170, 60)">
+              <rect width="140" height="80" rx="10" fill="#1a2236" stroke="#a78bfa" stroke-width="2"/>
+              <text x="70" y="22" text-anchor="middle" font-size="10" fill="#a78bfa">2 · PRD</text>
+              <text x="70" y="42" text-anchor="middle" font-size="11" fill="#e6ebf5">Write the PRD</text>
+              <text x="70" y="60" text-anchor="middle" font-size="10" fill="#94a3b8">→ PRD</text>
+            </g>
+            <path d="M 312 100 L 330 100" stroke="#a78bfa" stroke-width="2" fill="none" marker-end="url(#arrBF)"/>
+            <g transform="translate(332, 60)">
+              <rect width="140" height="80" rx="10" fill="#1a2236" stroke="#a78bfa" stroke-width="2"/>
+              <text x="70" y="22" text-anchor="middle" font-size="10" fill="#a78bfa">3 · ARCH</text>
+              <text x="70" y="42" text-anchor="middle" font-size="11" fill="#e6ebf5">Architecture (ADR)</text>
+              <text x="70" y="60" text-anchor="middle" font-size="10" fill="#94a3b8">→ ArchitectureDoc</text>
+            </g>
+            <path d="M 474 100 L 492 100" stroke="#a78bfa" stroke-width="2" fill="none" marker-end="url(#arrBF)"/>
+            <g transform="translate(494, 60)">
+              <rect width="140" height="80" rx="10" fill="#1a2236" stroke="#a78bfa" stroke-width="2"/>
+              <text x="70" y="22" text-anchor="middle" font-size="10" fill="#a78bfa">4 · PLAN</text>
+              <text x="70" y="42" text-anchor="middle" font-size="11" fill="#e6ebf5">Task breakdown</text>
+              <text x="70" y="60" text-anchor="middle" font-size="10" fill="#94a3b8">→ DeliveryPlan</text>
+            </g>
+            <path d="M 636 100 L 654 100" stroke="#a78bfa" stroke-width="2" fill="none" marker-end="url(#arrBF)"/>
+            <g transform="translate(656, 60)">
+              <rect width="140" height="80" rx="10" fill="#1a2236" stroke="#a78bfa" stroke-width="2"/>
+              <text x="70" y="22" text-anchor="middle" font-size="10" fill="#a78bfa">5 · DELIVERY</text>
+              <text x="70" y="42" text-anchor="middle" font-size="11" fill="#e6ebf5">TDD + incremental</text>
+              <text x="70" y="60" text-anchor="middle" font-size="10" fill="#94a3b8">→ DeliveryReport</text>
+            </g>
+            <path d="M 798 100 L 816 100" stroke="#a78bfa" stroke-width="2" fill="none" marker-end="url(#arrBF)"/>
+            <g transform="translate(818, 60)">
+              <rect width="140" height="80" rx="10" fill="#1a2236" stroke="#fb7185" stroke-width="2"/>
+              <text x="70" y="22" text-anchor="middle" font-size="10" fill="#fb7185">6 · SECURITY</text>
+              <text x="70" y="42" text-anchor="middle" font-size="11" fill="#e6ebf5">Security review</text>
+              <text x="70" y="60" text-anchor="middle" font-size="10" fill="#94a3b8">→ SecurityReview</text>
+            </g>
+            <path d="M 960 100 L 978 100" stroke="#a78bfa" stroke-width="2" fill="none" marker-end="url(#arrBF)"/>
+            <g transform="translate(980, 60)">
+              <rect width="140" height="80" rx="10" fill="#1a2236" stroke="#34d399" stroke-width="2"/>
+              <text x="70" y="22" text-anchor="middle" font-size="10" fill="#34d399">7 · TESTS</text>
+              <text x="70" y="42" text-anchor="middle" font-size="11" fill="#e6ebf5">Test plan (TDD)</text>
+              <text x="70" y="60" text-anchor="middle" font-size="10" fill="#94a3b8">→ TestPlan</text>
+            </g>
+          </g>
+        </svg>
+        <div class="cards" style="grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 22px;">
+          <div class="card purple" style="padding: 14px 16px;">
+            <h4 style="font-size: 15px;">🔗 Each step chains</h4>
+            <p style="font-size: 13px;">Stage <em>N+1</em> picks the previous artifact as its source. The PRD knows the refined idea; the architecture knows the PRD; the test plan knows it all.</p>
+          </div>
+          <div class="card purple" style="padding: 14px 16px;">
+            <h4 style="font-size: 15px;">📚 Grounded in your repo</h4>
+            <p style="font-size: 13px;">Point a Playbook at a GitHub repo; the brain ingests code + docs into the workspace, and every step cites the actual files.</p>
+          </div>
+          <div class="card purple" style="padding: 14px 16px;">
+            <h4 style="font-size: 15px;">✏️ Refinable mid-flight</h4>
+            <p style="font-size: 13px;">Comment on any artifact; click <em>Refine</em>; the chain re-runs from there with your feedback baked in.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================================
+           9. SUGGESTION MIXING
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Highlight 1 / 7 · Kickoff</div>
+        <h2>Never face a blank box.</h2>
+        <p class="sublead" style="margin-bottom: 32px; max-width: 42ch;">
+          Open any Playbook. Three real scenarios are already drawn from your KB — plus one stretch from outside it. Click. Run.
+        </p>
+        <div class="cols" style="grid-template-columns: 1.1fr 1fr; gap: 48px;">
+          <div>
+            <div class="ui-chip">
+              <span class="tag kb">📚 from KB</span>
+              <div class="body">The regulated-pharma compliance window opens Feb 2026 — does a vertical SKU on top of our existing platform unlock a $30M ARR opportunity?</div>
+            </div>
+            <div class="ui-chip">
+              <span class="tag kb">📚 from KB</span>
+              <div class="body">Two enterprise customers are independently asking for a native on-call layer — could it ride our existing distribution rail and ship in Q3?</div>
+            </div>
+            <div class="ui-chip">
+              <span class="tag wild">🌐 wildcard</span>
+              <div class="body">Mid-market healthcare runs parallel spreadsheet + ticket workflows for vendor-risk. A lightweight contract module — $15–25M ARR over 30 months?</div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 22px; padding-top: 6px;">
+            <div>
+              <div class="pill" style="margin-bottom: 8px;">📚 Grounded</div>
+              <p style="margin: 0; font-size: 18px; color: var(--text-dim);">Chips name <strong>real entities</strong> from your corpus (communities, god-nodes). No "generic SaaS opportunity."</p>
+            </div>
+            <div>
+              <div class="pill amber" style="margin-bottom: 8px;">🌐 Stretched</div>
+              <p style="margin: 0; font-size: 18px; color: var(--text-dim);">One chip always pushes outside the KB toward an <strong>adjacent move</strong> the team hasn't ingested yet.</p>
+            </div>
+            <div>
+              <div class="pill green" style="margin-bottom: 8px;">↻ Fresh</div>
+              <p style="margin: 0; font-size: 18px; color: var(--text-dim);">Re-roll any time. Caches for 15 minutes — explicit <em>↻ Refresh</em> button forces new picks.</p>
+            </div>
+          </div>
+        </div>
+        <p style="position: absolute; bottom: 36px; left: 80px; font-family: 'Fraunces', serif; font-size: 22px; font-style: italic; color: var(--text-dim); margin: 0;">
+          Replaces: 15 minutes of staring at the cursor.
+        </p>
+      </section>
+
+      <!-- =============================================================
+           10. REFINE KB
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Highlight 2 / 7 · Refine</div>
+        <h2 style="margin-bottom: 10px;">Your team's experience compounds.</h2>
+        <p class="sublead" style="margin-bottom: 20px; max-width: 50ch; font-size: 18px;">
+          Edit a fact in place. The LLM cites <em>your version</em> from then on — with your attribution. Delete to restore the original.
+        </p>
+        <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 36px;">
+          <div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+              <div class="card accent" style="padding: 12px 14px;">
+                <div style="font-size: 18px; line-height: 1; margin-bottom: 4px; color: #a5b4fc; font-weight: 700;">✎ Fix</div>
+                <p style="font-size: 13px; margin: 0; color: #e6ebf5;">Replace what the KB got wrong.</p>
+              </div>
+              <div class="card green" style="padding: 12px 14px;">
+                <div style="font-size: 18px; line-height: 1; margin-bottom: 4px; color: #4ade80; font-weight: 700;">＋ Add</div>
+                <p style="font-size: 13px; margin: 0; color: #e6ebf5;">Inject facts the corpus is silent on.</p>
+              </div>
+              <div class="card cyan" style="padding: 12px 14px;">
+                <div style="font-size: 18px; line-height: 1; margin-bottom: 4px; color: #67e8f9; font-weight: 700;">✓ Confirm</div>
+                <p style="font-size: 13px; margin: 0; color: #e6ebf5;">Vouch for a fact you've verified.</p>
+              </div>
+              <div class="card pink" style="padding: 12px 14px;">
+                <div style="font-size: 18px; line-height: 1; margin-bottom: 4px; color: #fb7185; font-weight: 700;">? Doubt</div>
+                <p style="font-size: 13px; margin: 0; color: #e6ebf5;">Flag a claim without overriding.</p>
+              </div>
+            </div>
+            <p style="font-size: 14px; color: #cbd5e1; margin: 0;">
+              <em>"Save as KB fact"</em> button on every conversation answer captures the gesture mid-thought.
+            </p>
+          </div>
+          <div>
+            <svg class="diagram" viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" style="max-width: 380px;">
+              <defs>
+                <marker id="arr3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M0,0 L10,5 L0,10 z" fill="#34d399"/>
+                </marker>
+              </defs>
+              <g transform="translate(80, 8)">
+                <rect width="240" height="46" rx="10" fill="rgba(52,211,153,0.10)" stroke="#34d399" stroke-width="2"/>
+                <text x="120" y="22" text-anchor="middle" class="label" fill="#34d399" font-size="12" font-weight="700">ANSWER</text>
+                <text x="120" y="38" text-anchor="middle" class="sublabel" font-size="10">cites both layers, with attribution</text>
+              </g>
+              <path d="M 200 74 L 200 60" class="arrow" stroke="#34d399" stroke-width="2" marker-end="url(#arr3)"/>
+              <g transform="translate(20, 82)">
+                <rect width="360" height="74" rx="10" fill="rgba(244,114,182,0.14)" stroke="#f472b6" stroke-width="2" stroke-dasharray="6 4"/>
+                <text x="180" y="28" text-anchor="middle" class="label" fill="#f472b6" font-size="13" font-weight="700">YOUR REFINEMENTS</text>
+                <text x="180" y="48" text-anchor="middle" class="sublabel" font-size="11">Fix · Add · Confirm · Doubt</text>
+                <text x="180" y="64" text-anchor="middle" class="sublabel" font-size="11">authored · reversible · always wins</text>
+              </g>
+              <g transform="translate(20, 178)">
+                <rect width="360" height="90" rx="10" fill="#1a2236" stroke="#818cf8" stroke-width="2"/>
+                <text x="180" y="28" text-anchor="middle" class="label" fill="#818cf8" font-size="13" font-weight="700">GRAPH FROM YOUR DOCUMENTS</text>
+                <text x="180" y="46" text-anchor="middle" class="sublabel" font-size="11">extracted automatically · read-only</text>
+                <circle cx="100" cy="72" r="5" fill="#34d399"/>
+                <circle cx="160" cy="68" r="6" fill="#818cf8"/>
+                <circle cx="220" cy="76" r="5" fill="#fbbf24"/>
+                <circle cx="280" cy="66" r="6" fill="#f472b6"/>
+                <line x1="100" y1="72" x2="160" y2="68" stroke="#94a3b8" stroke-width="1"/>
+                <line x1="160" y1="68" x2="220" y2="76" stroke="#94a3b8" stroke-width="1"/>
+                <line x1="220" y1="76" x2="280" y2="66" stroke="#94a3b8" stroke-width="1"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <p style="position: absolute; bottom: 18px; left: 68px; font-family: 'Fraunces', serif; font-size: 17px; font-style: italic; color: var(--text-dim); margin: 0;">
+          Replaces: tribal knowledge dying in Slack threads and offsite memories.
+        </p>
+      </section>
+
+      <!-- =============================================================
+           11. AUDIT KB FRESHNESS
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Highlight 3 / 7 · Audit</div>
+        <h2 style="margin-bottom: 10px;">Stop quoting last year's truth.</h2>
+        <p class="sublead" style="max-width: 56ch; font-size: 17px; margin-bottom: 0;">
+          The audit Playbook web-verifies every load-bearing claim in your KB and emits a paste-ready list of corrections — straight into the Refine tab.
+        </p>
+        <table class="audit-table">
+          <thead>
+            <tr><th>Corpus claim</th><th>Status</th><th>Proposed refinement</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Marketplace ARR ≈ $250M</td>
+              <td class="status"><span class="pill red">✕ Contradicted</span></td>
+              <td><em>Replace with $300M</em> — annual report 2026</td>
+            </tr>
+            <tr>
+              <td>QMSR compliance deadline · Feb 2026</td>
+              <td class="status"><span class="pill green">✓ Still true</span></td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Major competitor EOL date · Apr 2027</td>
+              <td class="status"><span class="pill amber">⚠ Verify</span></td>
+              <td>Press release confirms exact date</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px;">
+          <div style="text-align: center;"><div class="pill" style="margin-bottom: 4px;">🔍 Automated</div><p style="font-size: 12px; margin: 0; color: var(--text-dim);">Runs on demand or on a schedule.</p></div>
+          <div style="text-align: center;"><div class="pill green" style="margin-bottom: 4px;">📋 Paste-ready</div><p style="font-size: 12px; margin: 0; color: var(--text-dim);">One click → refinement applied.</p></div>
+          <div style="text-align: center;"><div class="pill cyan" style="margin-bottom: 4px;">🌐 Web-verified</div><p style="font-size: 12px; margin: 0; color: var(--text-dim);">Cites the source that contradicted you.</p></div>
+        </div>
+        <p style="position: absolute; bottom: 16px; left: 68px; font-family: 'Fraunces', serif; font-size: 17px; font-style: italic; color: var(--text-dim); margin: 0;">
+          Replaces: <em>"…wait, that number is from 2023."</em>
+        </p>
+      </section>
+
+      <!-- =============================================================
+           12. GAP ANALYSIS — synthesis layer
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Highlight 4 / 7 · Know the gaps</div>
+        <h2 style="margin-bottom: 8px;">Know what we <span style="color: var(--warn);">don't</span> know.</h2>
+        <p class="sublead" style="margin-bottom: 18px; max-width: 60ch; font-size: 17px;">
+          Every answer comes with a short list of what the brain is <em>silent on, stale on, or only half-supports</em>. No hallucinated confidence. Always on — across every Ask Graph query, every Conversation turn, every Playbook step.
+        </p>
+        <div class="cols" style="grid-template-columns: 1.1fr 1fr; gap: 36px; align-items: start;">
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="ui-chip">
+              <span class="tag kb">📚 you ask</span>
+              <div class="body" style="font-size: 16px;">Where should we bet in 2026 given the regulated-pharma window and current platform constraints?</div>
+            </div>
+            <div class="ui-chip" style="border-left: 3px solid var(--accent-2);">
+              <span class="tag kb" style="background: rgba(52,211,153,0.20); color: #6ee7b7;">📐 brain answers</span>
+              <div class="body" style="font-size: 15px;"><strong>TL;DR:</strong> A regulated-compliance SKU has the strongest signal — two enterprise asks and a clear timing window. Native on-call is adjacent but unproven beyond a single account…</div>
+            </div>
+            <div class="ui-chip" style="border-left: 3px solid var(--warn); background: rgba(251,191,36,0.08);">
+              <span class="tag" style="background: rgba(251,191,36,0.22); color: var(--warn);">⚠ what the brain doesn't know yet</span>
+              <ul style="margin: 4px 0 0 18px; padding: 0; font-size: 14px; line-height: 1.5; color: var(--text);">
+                <li>Corpus is silent on Q1 2026 revenue figures (most recent: Q3 2025)</li>
+                <li>Cited compliance deadline not verified against current regulator source</li>
+                <li>Only one customer source supports the on-call demand claim; second corroboration absent</li>
+              </ul>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 16px; padding-top: 4px;">
+            <div>
+              <div class="pill amber" style="margin-bottom: 6px;">🎯 Specific, never vague</div>
+              <p style="margin: 0; font-size: 15px; color: var(--text-dim);"><em>"Corpus is silent on X"</em> — never <em>"more research needed."</em> Each gap names a concrete missing or stale fact.</p>
+            </div>
+            <div>
+              <div class="pill" style="margin-bottom: 6px;">🔁 Always on, everywhere</div>
+              <p style="margin: 0; font-size: 15px; color: var(--text-dim);">Every Conversation turn (all 4 inference strategies), every Ask Graph synth, every Playbook step. Not a toggle — a default.</p>
+            </div>
+            <div>
+              <div class="pill green" style="margin-bottom: 6px;">🪜 Direct path to action</div>
+              <p style="margin: 0; font-size: 15px; color: var(--text-dim);">Each gap is one click from an action: ingest a doc, run the <em>Audit KB Freshness</em> playbook, or kick off web research to close it.</p>
+            </div>
+            <div>
+              <div class="pill pink" style="margin-bottom: 6px;">🤝 Honest by design</div>
+              <p style="margin: 0; font-size: 15px; color: var(--text-dim);">The brain refuses to pretend it knows the unknowable. Confident prose <em>plus</em> an explicit hedge — that's the contract.</p>
+            </div>
+          </div>
+        </div>
+        <p style="position: absolute; bottom: 14px; left: 68px; font-family: 'Fraunces', serif; font-size: 16px; font-style: italic; color: var(--text-dim); margin: 0;">
+          Replaces: confident-sounding LLM prose with invisible holes underneath.
+        </p>
+      </section>
+
+      <!-- =============================================================
+           13. FORESIGHT
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Highlight 5 / 7 · Simulate</div>
+        <h2 style="margin-bottom: 8px;">From private futures<br>to a <span style="color: var(--accent);">shared one</span>.</h2>
+        <p class="sublead" style="margin-bottom: 16px; max-width: 64ch; font-size: 16px;">
+          <strong>The problem:</strong> five people, five private futures — and reality becomes the only thing that reconciles them. ForeSight reconciles them <em>first</em>: eleven preset voices (plus any custom personas you define) argue your scenario across five time horizons, producing one shared picture — convergence <em>and</em> dissent — the whole team can act on.
+        </p>
+        <div class="cols" style="grid-template-columns: 1fr 1.1fr; gap: 28px; align-items: center;">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div>
+              <div class="pill pink" style="margin-bottom: 4px;">🎭 11 preset voices + custom</div>
+              <p style="margin: 0; font-size: 14px; color: var(--text-dim);">Bull · Bear · Customer · Competitor · Investor · Regulator · Enterprise · Retention · Growth · Delivery · Platform.</p>
+            </div>
+            <div>
+              <div class="pill cyan" style="margin-bottom: 4px;">🔭 5 horizons, same scenario</div>
+              <p style="margin: 0; font-size: 14px; color: var(--text-dim);">3mo · 6mo · 1y · 3y · 5y. A win in 6 months often inverts in 3 years — ForeSight makes that visible.</p>
+            </div>
+            <div>
+              <div class="pill amber" style="margin-bottom: 4px;">🔄 Multi-round, dissent preserved</div>
+              <p style="margin: 0; font-size: 14px; color: var(--text-dim);">Round 2+ sees Round 1 and refines. Convergence AND disagreement saved — not collapsed into false consensus.</p>
+            </div>
+            <div>
+              <div class="pill green" style="margin-bottom: 4px;">📄 Saved as artifact</div>
+              <p style="margin: 0; font-size: 14px; color: var(--text-dim);">Every simulation emits a typed Foresight Brief — citable, comparable, re-runnable.</p>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px;">
+            <svg viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 360px;">
+              <circle cx="260" cy="260" r="86" fill="#818cf8" opacity="0.18"/>
+              <circle cx="260" cy="260" r="64" fill="#818cf8"/>
+              <text x="260" y="252" text-anchor="middle" font-family="Inter" font-size="14" font-weight="700" fill="#0b0f1a">YOUR</text>
+              <text x="260" y="272" text-anchor="middle" font-family="Inter" font-size="14" font-weight="700" fill="#0b0f1a">SCENARIO</text>
+              <g transform="translate(260, 60)">
+                <circle r="40" fill="#1a2236" stroke="#34d399" stroke-width="2"/>
+                <text y="-4" text-anchor="middle" font-size="22">🐂</text>
+                <text y="18" text-anchor="middle" font-family="Inter" font-size="12" font-weight="700" fill="#34d399">Bull</text>
+              </g>
+              <g transform="translate(401, 119)">
+                <circle r="40" fill="#1a2236" stroke="#67e8f9" stroke-width="2"/>
+                <text y="-4" text-anchor="middle" font-size="22">💼</text>
+                <text y="18" text-anchor="middle" font-family="Inter" font-size="12" font-weight="700" fill="#67e8f9">Investor</text>
+              </g>
+              <g transform="translate(460, 260)">
+                <circle r="40" fill="#1a2236" stroke="#fb7185" stroke-width="2"/>
+                <text y="-4" text-anchor="middle" font-size="22">🐻</text>
+                <text y="18" text-anchor="middle" font-family="Inter" font-size="12" font-weight="700" fill="#fb7185">Bear</text>
+              </g>
+              <g transform="translate(401, 401)">
+                <circle r="40" fill="#1a2236" stroke="#fbbf24" stroke-width="2"/>
+                <text y="-4" text-anchor="middle" font-size="22">⚖︎</text>
+                <text y="18" text-anchor="middle" font-family="Inter" font-size="12" font-weight="700" fill="#fbbf24">Regulator</text>
+              </g>
+              <g transform="translate(260, 460)">
+                <circle r="40" fill="#1a2236" stroke="#67e8f9" stroke-width="2"/>
+                <text y="-4" text-anchor="middle" font-size="22">👤</text>
+                <text y="18" text-anchor="middle" font-family="Inter" font-size="12" font-weight="700" fill="#67e8f9">Customer</text>
+              </g>
+              <g transform="translate(119, 401)">
+                <circle r="40" fill="#1a2236" stroke="#a78bfa" stroke-width="2"/>
+                <text y="-4" text-anchor="middle" font-size="22">🛡</text>
+                <text y="18" text-anchor="middle" font-family="Inter" font-size="12" font-weight="700" fill="#a78bfa">Retention</text>
+              </g>
+              <g transform="translate(60, 260)">
+                <circle r="40" fill="#1a2236" stroke="#fbbf24" stroke-width="2"/>
+                <text y="-4" text-anchor="middle" font-size="22">⚔︎</text>
+                <text y="18" text-anchor="middle" font-family="Inter" font-size="12" font-weight="700" fill="#fbbf24">Competitor</text>
+              </g>
+              <g transform="translate(119, 119)">
+                <circle r="40" fill="#1a2236" stroke="#f472b6" stroke-width="2"/>
+                <text y="-4" text-anchor="middle" font-size="22">📈</text>
+                <text y="18" text-anchor="middle" font-family="Inter" font-size="12" font-weight="700" fill="#f472b6">Growth</text>
+              </g>
+              <g stroke="#233048" stroke-width="1" opacity="0.6">
+                <line x1="260" y1="100" x2="260" y2="196"/>
+                <line x1="372" y1="148" x2="304" y2="216"/>
+                <line x1="420" y1="260" x2="324" y2="260"/>
+                <line x1="372" y1="372" x2="304" y2="304"/>
+                <line x1="260" y1="420" x2="260" y2="324"/>
+                <line x1="148" y1="372" x2="216" y2="304"/>
+                <line x1="100" y1="260" x2="196" y2="260"/>
+                <line x1="148" y1="148" x2="216" y2="216"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <p style="position: absolute; bottom: 14px; left: 68px; font-family: 'Fraunces', serif; font-size: 16px; font-style: italic; color: var(--text-dim); margin: 0;">
+          Replaces: five private futures the team never reconciles — until reality picks one.
+        </p>
+      </section>
+
+      <!-- =============================================================
+           14. SELF-WIRING GRAPH — typed entities + role edges
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Highlight 6 / 7 · Self-wiring graph</div>
+        <h2 style="margin-bottom: 8px;">A graph that <span style="color: var(--cyan);">wires itself.</span></h2>
+        <p class="sublead" style="margin-bottom: 18px; max-width: 64ch; font-size: 16px;">
+          Every ingest runs a <em>deterministic, zero-LLM-call</em> post-pass that tags entities (Person · Company · Organization · Product) and adds <em>role-typed edges</em> the LLM doesn't reliably surface. Ask questions vector search can't reach.
+        </p>
+        <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 32px; align-items: start;">
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="ui-chip">
+              <span class="tag kb">📚 you ask</span>
+              <div class="body" style="font-size: 16px;">Who works at Acme AI? What did Bob invest in this quarter?</div>
+            </div>
+            <div class="ui-chip" style="border-left: 3px solid var(--cyan); background: rgba(103, 232, 249, 0.06);">
+              <span class="tag" style="background: rgba(103,232,249,0.18); color: var(--cyan);">🔗 typed-edge query</span>
+              <div class="body" style="font-size: 14px;">
+                <div style="margin-bottom: 6px;"><code style="font-size: 12px;">GET /api/entities/relations?relation=works_at&amp;target_label=Acme</code></div>
+                <div>
+                  <strong>Jane Doe</strong> <span style="color: var(--text-dim);">— works_at →</span> Acme AI<br>
+                  <strong>Bob Smith</strong> <span style="color: var(--text-dim);">— works_at →</span> Acme AI<br>
+                  <strong>Carol Lee</strong> <span style="color: var(--text-dim);">— advises →</span> Acme AI
+                </div>
+              </div>
+            </div>
+            <div class="ui-chip" style="border-left: 3px solid var(--accent-2); background: rgba(52, 211, 153, 0.06);">
+              <span class="tag" style="background: rgba(52,211,153,0.20); color: #6ee7b7;">📐 brain answers in prose</span>
+              <div class="body" style="font-size: 15px;"><strong>TL;DR:</strong> Three people are wired to Acme AI: Jane (works), Bob (works), Carol (advises). Bob also worked at Globex Corp <em>(team-roster.md)</em>…</div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 4px;">
+            <div>
+              <div class="pill cyan" style="margin-bottom: 6px;">🏷 Deterministic typing</div>
+              <p style="margin: 0; font-size: 14px; color: var(--text-dim);">Person · Company · Organization · Product tagged by rule, not by Claude. Runs on every rebuild. <strong>Zero API cost.</strong></p>
+            </div>
+            <div>
+              <div class="pill" style="margin-bottom: 6px;">🔗 Role-typed edges</div>
+              <p style="margin: 0; font-size: 14px; color: var(--text-dim);"><code style="font-size: 11px;">works_at · founded · invested_in · attended · advises</code>. Regex-pattern matched from any markdown / text in the workspace.</p>
+            </div>
+            <div>
+              <div class="pill amber" style="margin-bottom: 6px;">🎯 Reaches what vectors can't</div>
+              <p style="margin: 0; font-size: 14px; color: var(--text-dim);">"All advisors of Beta Holdings" · "Everyone who attended Stanford" · "All investments led by Bob in Q2". Structural queries, not similarity guesses.</p>
+            </div>
+            <div>
+              <div class="pill pink" style="margin-bottom: 6px;">🧬 Composes with everything</div>
+              <p style="margin: 0; font-size: 14px; color: var(--text-dim);">Refine KB can override a wrong type. Audit can flag stale relations. Gap-analysis still surfaces what's missing.</p>
+            </div>
+          </div>
+        </div>
+        <p style="position: absolute; bottom: 14px; left: 68px; right: 68px; font-family: 'Fraunces', serif; font-size: 14px; font-style: italic; color: var(--text-dim); margin: 0;">
+          Honest scope: the deterministic pass runs <em>on top of</em> Claude extraction, not instead of it; role-edge matches resolve against entities Claude already pulled out, so precision is conservative by default.
+        </p>
+      </section>
+
+      <!-- =============================================================
+           15. WORKSPACES — highlight 7/7
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Highlight 7 / 7 · Isolation</div>
+        <h2 style="margin-bottom: 8px;">One app. <span style="color: var(--accent);">Many brains.</span></h2>
+        <p class="sublead" style="margin-bottom: 18px; max-width: 60ch; font-size: 17px;">
+          Workspaces are first-class — each team gets its own corpus, graph, conversations, memory, rubrics, intents, playbooks, artifacts, and ForeSight sessions. <em>Strict isolation.</em> Optional templated copy from a sibling workspace on creation.
+        </p>
+        <div class="cards" style="grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 18px;">
+          <div class="card accent" style="padding: 16px;">
+            <h4 style="font-size: 16px;">🗂 Strict scope</h4>
+            <p style="font-size: 13px;">Every API call carries an <code style="font-size: 11px;">X-Workspace-Id</code> header. No cross-bleed. Ever.</p>
+          </div>
+          <div class="card green" style="padding: 16px;">
+            <h4 style="font-size: 16px;">🌱 Seed from another</h4>
+            <p style="font-size: 13px;">New workspace can copy rubrics + intents from a sibling — snapshots, not live links. Edits stay local.</p>
+          </div>
+          <div class="card cyan" style="padding: 16px;">
+            <h4 style="font-size: 16px;">🧰 Per-workspace tooling</h4>
+            <p style="font-size: 13px;">Intents, rubrics, playbooks, personas all overridable per workspace. Built-ins always restorable.</p>
+          </div>
+          <div class="card pink" style="padding: 16px;">
+            <h4 style="font-size: 16px;">📈 Diff-aware ingest</h4>
+            <p style="font-size: 13px;">Every rebuild emits a <em>what changed</em> diff — added / removed / relabeled nodes — surfaced in Refine KB.</p>
+          </div>
+        </div>
+        <p style="position: absolute; bottom: 16px; left: 68px; font-family: 'Fraunces', serif; font-size: 16px; font-style: italic; color: var(--text-dim); margin: 0;">
+          Replaces: a single shared drive nobody can prune without breaking five teams.
+        </p>
+      </section>
+
+      <!-- =============================================================
+           14. HOW IT COMPOSES — architecture
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Under the hood</div>
+        <h2 style="margin-bottom: 8px;">Everything composes.</h2>
+        <p class="sublead" style="max-width: 56ch; font-size: 17px;">One spine, four layers. Each independently editable, reversible, and auditable.</p>
+        <svg class="diagram" viewBox="0 0 1000 440" xmlns="http://www.w3.org/2000/svg" style="max-width: 980px; max-height: 480px; margin-top: 6px;">
+          <defs>
+            <marker id="arrA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+            </marker>
+          </defs>
+          <g transform="translate(40, 360)">
+            <rect width="200" height="60" rx="10" fill="#1a2236" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="100" y="26" text-anchor="middle" font-family="Inter" font-size="14" font-weight="700" fill="#e6ebf5">Documents</text>
+            <text x="100" y="46" text-anchor="middle" font-family="Inter" font-size="12" fill="#94a3b8">PDFs · Slack · code · web</text>
+          </g>
+          <g transform="translate(290, 360)">
+            <rect width="200" height="60" rx="10" fill="#1a2236" stroke="#818cf8" stroke-width="2"/>
+            <text x="100" y="26" text-anchor="middle" font-family="Inter" font-size="14" font-weight="700" fill="#818cf8">Knowledge Graph</text>
+            <text x="100" y="46" text-anchor="middle" font-family="Inter" font-size="12" fill="#94a3b8">graphify · nodes · edges · communities</text>
+          </g>
+          <g transform="translate(540, 360)">
+            <rect width="200" height="60" rx="10" fill="rgba(244,114,182,0.12)" stroke="#f472b6" stroke-width="2" stroke-dasharray="6 4"/>
+            <text x="100" y="26" text-anchor="middle" font-family="Inter" font-size="14" font-weight="700" fill="#f472b6">Refinements</text>
+            <text x="100" y="46" text-anchor="middle" font-family="Inter" font-size="12" fill="#94a3b8">your edits · authored · revertable</text>
+          </g>
+          <g transform="translate(790, 360)">
+            <rect width="170" height="60" rx="10" fill="rgba(52,211,153,0.10)" stroke="#34d399" stroke-width="2"/>
+            <text x="85" y="26" text-anchor="middle" font-family="Inter" font-size="14" font-weight="700" fill="#34d399">LLM</text>
+            <text x="85" y="46" text-anchor="middle" font-family="Inter" font-size="12" fill="#94a3b8">Claude Opus/Sonnet/Haiku</text>
+          </g>
+          <path d="M 240 390 L 290 390" class="arrow" marker-end="url(#arrA)"/>
+          <path d="M 490 390 L 540 390" class="arrow" marker-end="url(#arrA)"/>
+          <path d="M 740 390 L 790 390" class="arrow" marker-end="url(#arrA)"/>
+          <g transform="translate(290, 240)">
+            <rect width="200" height="50" rx="10" fill="#1a2236" stroke="#fbbf24" stroke-width="1.5"/>
+            <text x="100" y="22" text-anchor="middle" font-family="Inter" font-size="13" font-weight="700" fill="#fbbf24">RUBRIC</text>
+            <text x="100" y="38" text-anchor="middle" font-family="Inter" font-size="12" fill="#94a3b8">company framing rules</text>
+          </g>
+          <g transform="translate(540, 240)">
+            <rect width="200" height="50" rx="10" fill="#1a2236" stroke="#fbbf24" stroke-width="1.5"/>
+            <text x="100" y="22" text-anchor="middle" font-family="Inter" font-size="13" font-weight="700" fill="#fbbf24">MEMORY</text>
+            <text x="100" y="38" text-anchor="middle" font-family="Inter" font-size="12" fill="#94a3b8">durable user-asserted facts</text>
+          </g>
+          <path d="M 390 290 L 850 360" class="arrow" stroke="#fbbf24" marker-end="url(#arrA)"/>
+          <path d="M 640 290 L 870 360" class="arrow" stroke="#fbbf24" marker-end="url(#arrA)"/>
+          <g transform="translate(120, 80)">
+            <rect width="150" height="60" rx="10" fill="#1a2236" stroke="#34d399" stroke-width="1.5"/>
+            <text x="75" y="26" text-anchor="middle" font-family="Inter" font-size="13" font-weight="700" fill="#e6ebf5">Conversations</text>
+            <text x="75" y="46" text-anchor="middle" font-family="Inter" font-size="12" fill="#94a3b8">durable threads</text>
+          </g>
+          <g transform="translate(290, 80)">
+            <rect width="150" height="60" rx="10" fill="#1a2236" stroke="#34d399" stroke-width="1.5"/>
+            <text x="75" y="26" text-anchor="middle" font-family="Inter" font-size="13" font-weight="700" fill="#e6ebf5">Playbooks</text>
+            <text x="75" y="46" text-anchor="middle" font-family="Inter" font-size="12" fill="#94a3b8">17 typed artifacts</text>
+          </g>
+          <g transform="translate(460, 80)">
+            <rect width="150" height="60" rx="10" fill="#1a2236" stroke="#34d399" stroke-width="1.5"/>
+            <text x="75" y="26" text-anchor="middle" font-family="Inter" font-size="13" font-weight="700" fill="#e6ebf5">ForeSight</text>
+            <text x="75" y="46" text-anchor="middle" font-family="Inter" font-size="12" fill="#94a3b8">shared future</text>
+          </g>
+          <g transform="translate(630, 80)">
+            <rect width="150" height="60" rx="10" fill="#1a2236" stroke="#34d399" stroke-width="1.5"/>
+            <text x="75" y="26" text-anchor="middle" font-family="Inter" font-size="13" font-weight="700" fill="#e6ebf5">Refine KB</text>
+            <text x="75" y="46" text-anchor="middle" font-family="Inter" font-size="12" fill="#94a3b8">edit truth in-place</text>
+          </g>
+          <g transform="translate(800, 80)">
+            <rect width="150" height="60" rx="10" fill="#1a2236" stroke="#a78bfa" stroke-width="1.5"/>
+            <text x="75" y="26" text-anchor="middle" font-family="Inter" font-size="13" font-weight="700" fill="#a78bfa">Dev chain</text>
+            <text x="75" y="46" text-anchor="middle" font-family="Inter" font-size="12" fill="#94a3b8">brownfield · 7 steps</text>
+          </g>
+          <path d="M 200 140 L 850 350" class="arrow" stroke="#34d399" marker-end="url(#arrA)"/>
+          <path d="M 370 140 L 870 350" class="arrow" stroke="#34d399" marker-end="url(#arrA)"/>
+          <path d="M 540 140 L 880 350" class="arrow" stroke="#34d399" marker-end="url(#arrA)"/>
+          <path d="M 710 140 L 880 350" class="arrow" stroke="#34d399" marker-end="url(#arrA)"/>
+          <path d="M 870 140 L 880 350" class="arrow" stroke="#a78bfa" marker-end="url(#arrA)"/>
+        </svg>
+      </section>
+
+      <!-- =============================================================
+           15. WHAT'S SHIPPED
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Status</div>
+        <h2>Already shipping.</h2>
+        <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 28px;">
+          <ul class="checklist">
+            <li><strong>17 built-in Playbooks</strong> — 10 strategy + 7-step brownfield AI dev chain</li>
+            <li><strong>17 typed artifact kinds</strong>, each with versioning + reviewer comments + refine-from-comments</li>
+            <li><strong>Refine KB</strong> — Fix / Add / Confirm / Doubt on any node, in place</li>
+            <li><strong>Save as KB fact</strong> button on every conversation answer</li>
+            <li><strong>11 ForeSight personas</strong> + custom · 5 horizons · multi-round dissent preserved</li>
+            <li><strong>Audit KB Freshness</strong> playbook with web-verified corrections</li>
+            <li><strong>Suggestion mixing</strong> — KB-grounded + wildcard chips · refresh on demand</li>
+          </ul>
+          <ul class="checklist">
+            <li><strong>Workspaces</strong> — strict per-team isolation, seedable from siblings</li>
+            <li><strong>Re-ingestion diff</strong> — knows what changed across rebuilds</li>
+            <li><strong>Universal rubric + memory</strong> injection across every LLM call</li>
+            <li><strong>Override-in-place + restore-default</strong> for Intents, Personas, Rubrics, Playbooks</li>
+            <li><strong>Inference strategies</strong> — none · reflection · CoVe · best-of-3 (per conversation)</li>
+            <li><strong>Optional semantic-vector index</strong> via OpenAI / Voyage embeddings</li>
+            <li><strong>Repo ingest</strong> — point at a GitHub repo; code + docs in one workspace</li>
+          </ul>
+        </div>
+        <p style="margin-top: 28px; font-size: 17px; color: var(--text-dim);">
+          Built with <code>FastAPI · React · Anthropic Claude</code>. Running internally at <code>localhost:8000</code> today.
+        </p>
+      </section>
+
+      <!-- =============================================================
+           16. WIRED INTO YOUR STACK
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">What comes next</div>
+        <h2 style="margin-bottom: 8px;">Wired into your stack.</h2>
+        <p class="sublead" style="margin-bottom: 18px; max-width: 60ch; font-size: 17px;">
+          The brain doesn't replace your tools — it <em>composes</em> them. Every signal pulled in. Every brief pushed out. One source of truth across the systems you already use.
+        </p>
+        <svg viewBox="0 0 1140 380" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 1140px; max-height: 420px;">
+          <defs>
+            <marker id="arrIn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#818cf8"/>
+            </marker>
+            <marker id="arrOut" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#34d399"/>
+            </marker>
+          </defs>
+          <text x="120" y="20" text-anchor="middle" font-family="Inter" font-size="11" font-weight="700" fill="#818cf8" letter-spacing="2">SOURCES · READ</text>
+          <g font-family="Inter" font-size="13" font-weight="600" fill="#e6ebf5">
+            <g transform="translate(20, 40)">
+              <rect width="200" height="44" rx="8" fill="#1a2236" stroke="#818cf8" stroke-width="1.5"/>
+              <text x="100" y="20" text-anchor="middle">Jira Product Discovery</text>
+              <text x="100" y="36" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="400">ideas, bets, signals</text>
+            </g>
+            <g transform="translate(20, 96)">
+              <rect width="200" height="44" rx="8" fill="#1a2236" stroke="#818cf8" stroke-width="1.5"/>
+              <text x="100" y="20" text-anchor="middle">Jira Feedback / VoC</text>
+              <text x="100" y="36" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="400">raw customer signal</text>
+            </g>
+            <g transform="translate(20, 152)">
+              <rect width="200" height="44" rx="8" fill="#1a2236" stroke="#818cf8" stroke-width="1.5"/>
+              <text x="100" y="20" text-anchor="middle">Confluence / Notion</text>
+              <text x="100" y="36" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="400">team knowledge</text>
+            </g>
+            <g transform="translate(20, 208)">
+              <rect width="200" height="44" rx="8" fill="#1a2236" stroke="#818cf8" stroke-width="1.5"/>
+              <text x="100" y="20" text-anchor="middle">Slack / Teams</text>
+              <text x="100" y="36" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="400">tacit knowledge mid-flight</text>
+            </g>
+            <g transform="translate(20, 264)">
+              <rect width="200" height="44" rx="8" fill="#1a2236" stroke="#818cf8" stroke-width="1.5"/>
+              <text x="100" y="20" text-anchor="middle">Salesforce / HubSpot</text>
+              <text x="100" y="36" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="400">pipeline + win/loss</text>
+            </g>
+            <g transform="translate(20, 320)">
+              <rect width="200" height="44" rx="8" fill="#1a2236" stroke="#818cf8" stroke-width="1.5"/>
+              <text x="100" y="20" text-anchor="middle">GitHub / GitLab</text>
+              <text x="100" y="36" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="400">code + delivery reality</text>
+            </g>
+          </g>
+          <g stroke="#818cf8" stroke-width="1.5" fill="none" opacity="0.7">
+            <path d="M 224 62 L 470 174" marker-end="url(#arrIn)"/>
+            <path d="M 224 118 L 470 178" marker-end="url(#arrIn)"/>
+            <path d="M 224 174 L 470 182" marker-end="url(#arrIn)"/>
+            <path d="M 224 230 L 470 186" marker-end="url(#arrIn)"/>
+            <path d="M 224 286 L 470 190" marker-end="url(#arrIn)"/>
+            <path d="M 224 342 L 470 194" marker-end="url(#arrIn)"/>
+          </g>
+          <g transform="translate(470, 130)">
+            <rect width="200" height="120" rx="16" fill="#818cf8" opacity="0.16"/>
+            <rect width="200" height="120" rx="16" fill="none" stroke="#818cf8" stroke-width="2"/>
+            <text x="100" y="42" text-anchor="middle" font-family="Fraunces" font-size="22" font-weight="900" fill="#a5b4fc">InnoBrain</text>
+            <text x="100" y="64" text-anchor="middle" font-family="Inter" font-size="11" fill="#cbd5e1">Graph · Refinements</text>
+            <text x="100" y="80" text-anchor="middle" font-family="Inter" font-size="11" fill="#cbd5e1">Playbooks · ForeSight</text>
+            <line x1="20" y1="94" x2="180" y2="94" stroke="#818cf8" stroke-width="1" opacity="0.4"/>
+            <text x="100" y="108" text-anchor="middle" font-family="Inter" font-size="10" fill="#94a3b8" font-style="italic">one shared brain</text>
+          </g>
+          <g stroke="#34d399" stroke-width="1.5" fill="none" opacity="0.7">
+            <path d="M 670 174 L 916 62" marker-end="url(#arrOut)"/>
+            <path d="M 670 178 L 916 118" marker-end="url(#arrOut)"/>
+            <path d="M 670 182 L 916 174" marker-end="url(#arrOut)"/>
+            <path d="M 670 186 L 916 230" marker-end="url(#arrOut)"/>
+            <path d="M 670 190 L 916 286" marker-end="url(#arrOut)"/>
+            <path d="M 670 194 L 916 342" marker-end="url(#arrOut)"/>
+          </g>
+          <text x="1016" y="20" text-anchor="middle" font-family="Inter" font-size="11" font-weight="700" fill="#34d399" letter-spacing="2">ACTIONS · WRITE</text>
+          <g font-family="Inter" font-size="13" font-weight="600" fill="#e6ebf5">
+            <g transform="translate(916, 40)">
+              <rect width="200" height="44" rx="8" fill="#1a2236" stroke="#34d399" stroke-width="1.5"/>
+              <text x="100" y="20" text-anchor="middle">Roadmap</text>
+              <text x="100" y="36" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="400">auto-update from briefs</text>
+            </g>
+            <g transform="translate(916, 96)">
+              <rect width="200" height="44" rx="8" fill="#1a2236" stroke="#34d399" stroke-width="1.5"/>
+              <text x="100" y="20" text-anchor="middle">SPM / Portfolio</text>
+              <text x="100" y="36" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="400">initiative briefs · alignment</text>
+            </g>
+            <g transform="translate(916, 152)">
+              <rect width="200" height="44" rx="8" fill="#1a2236" stroke="#34d399" stroke-width="1.5"/>
+              <text x="100" y="20" text-anchor="middle">Marketing Stack</text>
+              <text x="100" y="36" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="400">campaign + positioning briefs</text>
+            </g>
+            <g transform="translate(916, 208)">
+              <rect width="200" height="44" rx="8" fill="#1a2236" stroke="#34d399" stroke-width="1.5"/>
+              <text x="100" y="20" text-anchor="middle">Sales Enablement</text>
+              <text x="100" y="36" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="400">battlecards · objection kits</text>
+            </g>
+            <g transform="translate(916, 264)">
+              <rect width="200" height="44" rx="8" fill="#1a2236" stroke="#34d399" stroke-width="1.5"/>
+              <text x="100" y="20" text-anchor="middle">PRDs · ADRs · Test plans</text>
+              <text x="100" y="36" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="400">engineering-ready docs</text>
+            </g>
+            <g transform="translate(916, 320)">
+              <rect width="200" height="44" rx="8" fill="#1a2236" stroke="#34d399" stroke-width="1.5"/>
+              <text x="100" y="20" text-anchor="middle">Board / All-hands Decks</text>
+              <text x="100" y="36" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="400">narratives that stay current</text>
+            </g>
+          </g>
+        </svg>
+        <p style="position: absolute; bottom: 14px; left: 68px; right: 68px; font-family: 'Fraunces', serif; font-size: 17px; font-style: italic; color: var(--text-dim); margin: 0; text-align: center;">
+          One decision. Every system. Knowledge work that finally compounds.
+        </p>
+      </section>
+
+      <!-- =============================================================
+           17. DRAGON'S DEN — WHO IS THE BUYER
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Pitch 1 / 4 · The buyer</div>
+        <h2>Who pays.</h2>
+        <p class="sublead" style="margin-bottom: 22px; max-width: 60ch; font-size: 17px;">
+          One persona signs the cheque. Two more push for it. Sweet-spot ICP: <em>roll-up SaaS at $100M–$500M ARR</em> — where knowledge fragmentation hurts most and the budget already exists.
+        </p>
+        <div class="cards" style="grid-template-columns: repeat(3, 1fr); gap: 16px;">
+          <div class="card accent">
+            <span class="icon">✍️</span>
+            <h4>Decides — CPO or Head of Strategy</h4>
+            <p>$50M–$500M ARR SaaS. Owns portfolio bets, build-vs-buy calls, board narrative. Already paying $200k+/brief to McKinsey, $75k/yr to Crayon, $150k+/yr to Pigment.</p>
+          </div>
+          <div class="card green">
+            <span class="icon">📣</span>
+            <h4>Champions — VP / Director of Product</h4>
+            <p>Runs 3–10 PMs, accountable for roadmap coherence. Feels every PM running a private ChatGPT in a different direction. Pushes for it because <em>shared rubric = shared roadmap</em>.</p>
+          </div>
+          <div class="card cyan">
+            <span class="icon">⚙️</span>
+            <h4>Uses — Senior PMs &amp; Strategy ICs</h4>
+            <p>The daily users who feed the brain and consume the artifacts. Adoption metric — time to first usable brief — has to land under 30 minutes. Today's prototype already does.</p>
+          </div>
+        </div>
+        <div style="margin-top: 22px; padding: 14px 18px; background: rgba(129,140,248,0.10); border-left: 3px solid var(--accent); border-radius: 8px;">
+          <strong style="color: var(--accent); font-size: 13px; letter-spacing: 0.06em;">SWEET SPOT</strong>
+          <p style="margin: 4px 0 0; font-size: 15px; color: var(--text);">
+            Acquisition-heavy SaaS portfolios (think: Atlassian-style roll-ups, Vista-backed mid-market). Five product lines, five private versions of the truth — and the cost of misalignment is millions per quarter.
+          </p>
+        </div>
+        <p style="position: absolute; bottom: 14px; left: 68px; font-family: 'Fraunces', serif; font-size: 16px; font-style: italic; color: var(--text-dim); margin: 0;">
+          Buyer pain in one line: <em>"I can't tell what we actually believe across twelve product lines."</em>
+        </p>
+      </section>
+
+      <!-- =============================================================
+           18. DRAGON'S DEN — WHY NOW
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Pitch 2 / 4 · Why now</div>
+        <h2>Three forcing functions <span style="color: var(--accent);">converging in 2026.</span></h2>
+        <div class="cards" style="grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 26px;">
+          <div class="card amber">
+            <span class="icon">🌪</span>
+            <h4>AI made the chaos worse first</h4>
+            <p>Every PM has a private ChatGPT habit. Output: more docs, <em>less</em> convergence. Companies trying to "use AI for strategy" land in worse fragmentation than before — every brain holding its own private AI session.</p>
+          </div>
+          <div class="card pink">
+            <span class="icon">📉</span>
+            <h4>Post-ZIRP — bigger bets, less runway</h4>
+            <p>Strategy mistakes cost 2× more (less margin to recover). Boards demand more rigor per dollar invested. Build-vs-buy decisions in 2026 are the highest-stakes they've been in a decade.</p>
+          </div>
+          <div class="card purple">
+            <span class="icon">🤖</span>
+            <h4>Brownfield AI dev is the new gold rush</h4>
+            <p>Cursor, Claude Code, Devin all need <em>business-grounded</em> specs. InnoBrain is the missing link: strategy → typed PRD → architecture → shipped code. Customers ask <em>"how do we make AI dev produce the right thing"</em> — not just <em>"faster."</em></p>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 26px; padding: 16px 22px; background: var(--bg-2); border-radius: 10px; border-left: 3px solid var(--accent);">
+          <div>
+            <div class="pill amber" style="margin-bottom: 6px;">📈 The market is already asking for this</div>
+            <p style="margin: 0; font-size: 14px; color: var(--text-dim);">Glean ($4.6B last raise), Crayon, Pigment — all betting that enterprise wants <em>structured</em> AI work, not just chat. None ship typed, refinable strategic artifacts. None do brownfield dev chains.</p>
+          </div>
+          <div>
+            <div class="pill purple" style="margin-bottom: 6px;">🪟 The window is narrow</div>
+            <p style="margin: 0; font-size: 14px; color: var(--text-dim);">12–18 months before an incumbent bolts graph-grounded playbooks onto an existing surface. Today, nobody connects strategic context to brownfield AI dev. <em>We do.</em></p>
+          </div>
+        </div>
+        <p style="position: absolute; bottom: 14px; left: 68px; font-family: 'Fraunces', serif; font-size: 16px; font-style: italic; color: var(--text-dim); margin: 0;">
+          AI made the problem worse before it makes it better. We are the <em>"before it makes it better."</em>
+        </p>
+      </section>
+
+      <!-- =============================================================
+           19. DRAGON'S DEN — WHY PAY
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Pitch 3 / 4 · The value math</div>
+        <h2 style="margin-bottom: 8px;">One avoided wrong bet<br>pays for <span style="color: var(--accent);">a decade.</span></h2>
+        <div class="cards" style="grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px;">
+          <div class="card accent" style="padding: 16px;">
+            <h4 style="font-size: 15px;">Replace one consultancy brief</h4>
+            <p style="font-size: 12.5px;">McKinsey / BCG: <strong>$200k–$500k</strong> per brief, 6–8 weeks.<br>InnoBrain: <strong>$25k/yr</strong> · 50+ briefs · same hour, same day.</p>
+          </div>
+          <div class="card pink" style="padding: 16px;">
+            <h4 style="font-size: 15px;">Avoid one bad build-vs-buy</h4>
+            <p style="font-size: 12.5px;">Industry estimates: <strong>a large share</strong> of build-vs-buy calls regret-ship. Avoided cost per call: <strong>$1M–$5M</strong> in dev + opportunity.</p>
+          </div>
+          <div class="card green" style="padding: 16px;">
+            <h4 style="font-size: 15px;">Compound knowledge year over year</h4>
+            <p style="font-size: 12.5px;">ChatGPT: starts from zero. Every. Time.<br>InnoBrain: refinements stick. Year 2 is <strong>~3×</strong> more valuable than year 1.</p>
+          </div>
+          <div class="card purple" style="padding: 16px;">
+            <h4 style="font-size: 15px;">Faster AI-led shipping</h4>
+            <p style="font-size: 12.5px;">Brownfield chain: strategy → PRD → arch → code, one corpus. Replaces <strong>~6 weeks</strong> of PM + architect time per major feature.</p>
+          </div>
+        </div>
+        <h3 style="margin-top: 24px; font-size: 13px;">Comparable benchmarks</h3>
+        <table class="audit-table">
+          <thead>
+            <tr><th>Tool</th><th>Pricing</th><th>What it does</th><th>Vs. InnoBrain</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Glean</td>
+              <td><strong>$15–40 / user / mo</strong></td>
+              <td>Enterprise search across SaaS apps</td>
+              <td>Search, not strategy. No typed outputs.</td>
+            </tr>
+            <tr>
+              <td>Crayon</td>
+              <td><strong>$50k–200k / yr</strong></td>
+              <td>Competitive intelligence dashboards</td>
+              <td>One use case. Read-only. No artifacts.</td>
+            </tr>
+            <tr>
+              <td>Pigment</td>
+              <td><strong>$50k–500k / yr</strong></td>
+              <td>FP&amp;A planning</td>
+              <td>Numbers, not narrative. No qualitative reasoning.</td>
+            </tr>
+            <tr>
+              <td>Notion AI</td>
+              <td><strong>$10 / user / mo</strong></td>
+              <td>General-purpose chat in your wiki</td>
+              <td>Generic. No graph. No refinements. No dev chain.</td>
+            </tr>
+            <tr style="background: rgba(129,140,248,0.12);">
+              <td style="color: var(--accent); font-weight: 700;">InnoBrain</td>
+              <td><strong style="color: var(--accent);">$25–75k / workspace / yr</strong></td>
+              <td>Strategy brain · typed artifacts · brownfield dev chain</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="position: absolute; bottom: 14px; left: 68px; font-family: 'Fraunces', serif; font-size: 16px; font-style: italic; color: var(--text-dim); margin: 0;">
+          Pricing pays back inside <em>one</em> avoided regret-decision.
+        </p>
+      </section>
+
+      <!-- =============================================================
+           20. DRAGON'S DEN — HOW WE SHIP
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="eyebrow">Pitch 4 / 4 · Speed to market</div>
+        <h2 style="margin-bottom: 6px;">6 months to first paid logo.<br><span style="color: var(--accent);">18 months to $1M ARR.</span></h2>
+        <p class="sublead" style="margin-bottom: 18px; max-width: 56ch; font-size: 16px;">
+          The product is built. Distribution exists. We need <em>two engineers, a design-partner program, and an internal sponsor</em> to convert the lead into a business.
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 22px;">
+          <div class="card accent" style="padding: 14px;">
+            <div class="pill" style="margin-bottom: 8px;">Month 0–2 · NOW</div>
+            <p style="font-size: 12.5px; margin: 0;">Internal pilot — one strategy team, one product team. Run the Brownfield dev chain on our <em>own</em> roadmap. 3 design partners signed at $0 in exchange for case studies.</p>
+          </div>
+          <div class="card cyan" style="padding: 14px;">
+            <div class="pill cyan" style="margin-bottom: 8px;">Month 3–4</div>
+            <p style="font-size: 12.5px; margin: 0;">First connectors: <strong>Confluence + Jira Product Discovery</strong> (~8 engineer-weeks). Atlassian Marketplace listing. First <strong>2 paying logos at $25k ARR.</strong></p>
+          </div>
+          <div class="card green" style="padding: 14px;">
+            <div class="pill green" style="margin-bottom: 8px;">Month 5–6</div>
+            <p style="font-size: 12.5px; margin: 0;"><strong>Slack + GitHub</strong> connectors. <strong>5 paying logos · $150k ARR.</strong> First public case study published.</p>
+          </div>
+          <div class="card pink" style="padding: 14px;">
+            <div class="pill pink" style="margin-bottom: 8px;">Month 7–18</div>
+            <p style="font-size: 12.5px; margin: 0;">Anchor logos at <strong>$50–75k ACV</strong>. First sales hire. <strong>$1M ARR run-rate</strong> by end of horizon.</p>
+          </div>
+        </div>
+        <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 32px; align-items: start;">
+          <div>
+            <h3 style="font-size: 13px; color: var(--accent-2); margin-bottom: 10px;">✓ ALREADY HAVE</h3>
+            <ul class="checklist" style="margin: 0;">
+              <li style="font-size: 15px;">Working product — 17 Playbooks, real users</li>
+              <li style="font-size: 15px;">Distribution channel — Atlassian Marketplace + existing network</li>
+              <li style="font-size: 15px;">Lighthouse customer — internal use today</li>
+              <li style="font-size: 15px;">Defensible differentiator — Brownfield AI dev chain</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="font-size: 13px; color: var(--warn); margin-bottom: 10px;">→ ASKING FOR</h3>
+            <ul style="list-style: none; margin: 0; padding: 0;">
+              <li style="font-size: 15px; padding: 6px 0 6px 28px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--warn); font-weight: 700;">→</span> 2 engineers (connectors, auth, multi-tenant)</li>
+              <li style="font-size: 15px; padding: 6px 0 6px 28px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--warn); font-weight: 700;">→</span> 1 design-partner manager (months 0–6)</li>
+              <li style="font-size: 15px; padding: 6px 0 6px 28px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--warn); font-weight: 700;">→</span> 1 GTM hire from month 7</li>
+              <li style="font-size: 15px; padding: 6px 0 6px 28px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--warn); font-weight: 700;">→</span> Internal commit: <em>we become customer #1</em></li>
+            </ul>
+          </div>
+        </div>
+        <p style="position: absolute; bottom: 12px; left: 68px; font-family: 'Fraunces', serif; font-size: 16px; font-style: italic; color: var(--text-dim); margin: 0;">
+          Technical risk is behind us. The remaining risk is commercial — and that's the cheapest kind to retire.
+        </p>
+      </section>
+
+      <!-- =============================================================
+           21. CLOSE
+           ============================================================= -->
+      <section data-background-color="#0b0f1a">
+        <div class="v-center center">
+          <div class="quote" style="margin: 0 auto; max-width: 26ch; text-align: center;">
+            "Your knowledge graph<br>is the only moat<br>nobody else can clone."
+            <span class="by">— InnoBrain · the strategy brain</span>
+          </div>
+          <p style="margin-top: 64px; font-size: 18px; color: var(--text-dim);">
+            <code>localhost:8000</code> · <code>presentation.html</code> · <code>?print-pdf</code> for export · let's talk.
+          </p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      transition: "slide",
+      transitionSpeed: "default",
+      backgroundTransition: "fade",
+      controls: true,
+      progress: true,
+      slideNumber: "c/t",
+      width: 1280,
+      height: 800,
+      margin: 0.04,
+      minScale: 0.3,
+      maxScale: 1.6,
+      // Render every slide as a separate paged-PDF page when ?print-pdf is set
+      pdfSeparateFragments: false,
+    });
+
+    // === Download-as-PDF flow ===
+    // Standard reveal.js export: load the page with ?print-pdf, then print.
+    // The PDF print stylesheet at the top of <head> kicks in automatically.
+    (function setupDownload() {
+      const btn = document.getElementById("dlBtn");
+      const hint = document.getElementById("dlHint");
+      if (!btn) return;
+
+      // Show a brief hint on hover so users know what's about to happen.
+      let hintTimer;
+      btn.addEventListener("mouseenter", () => {
+        clearTimeout(hintTimer);
+        hint.classList.add("visible");
+      });
+      btn.addEventListener("mouseleave", () => {
+        hintTimer = setTimeout(() => hint.classList.remove("visible"), 600);
+      });
+
+      // If we're already in print-pdf mode, open the print dialog immediately
+      // (covers the case where someone opens the URL with ?print-pdf manually).
+      const inPrintMode = /print-pdf/.test(window.location.search);
+      if (inPrintMode) {
+        // Wait for reveal + fonts to settle, then trigger print.
+        window.setTimeout(() => window.print(), 800);
+        btn.textContent = "Print dialog opening…";
+        btn.disabled = true;
+        return;
+      }
+
+      btn.addEventListener("click", () => {
+        // Reload with print-pdf appended; the inline <script> in <head>
+        // loads pdf.css, then the listener above auto-opens the print dialog.
+        const url = new URL(window.location.href);
+        url.searchParams.set("print-pdf", "1");
+        // Force first slide so the export starts cleanly.
+        url.hash = "/0";
+        window.location.href = url.toString();
+      });
+    })();
+  </script>
+</body>
+</html>

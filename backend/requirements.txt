@@ -1,0 +1,14 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+python-dotenv==1.0.1
+graphifyy>=0.8.2
+anthropic>=0.40.0
+truststore>=0.10.0
+# Optional — semantic-vector index for graph retrieval. The embeddings module
+# falls back to a no-op when neither key is set, so these stay optional installs.
+openai>=1.50.0
+# voyageai>=0.3.0  # uncomment if you prefer Voyage (Anthropic-recommended, cheaper)
+# .gitignore + .git/info/exclude matcher for repo ingest. Optional — if missing,
+# ingest falls back to just the hard-coded _REPO_SKIP_DIRS list.
+pathspec>=0.12

@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>InnoBrain — Onboarding &amp; User Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Fraunces:wght@500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --bg-2: #121828;
+      --panel: #1a2236;
+      --border: #233048;
+      --text: #e6ebf5;
+      --text-dim: #94a3b8;
+      --text-faint: #64748b;
+      --accent: #818cf8;
+      --accent-2: #34d399;
+      --warn: #fbbf24;
+      --danger: #fb7185;
+      --cyan: #67e8f9;
+      --pink: #f472b6;
+      --purple: #a78bfa;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+    body {
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      letter-spacing: -0.005em;
+    }
+    h1, h2, h3, h4 {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--text);
+      margin: 0;
+    }
+    h2 { font-size: 36px; margin: 8px 0 16px; }
+    h3 {
+      font-size: 22px;
+      font-family: "Inter";
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-top: 28px;
+      margin-bottom: 10px;
+    }
+    h4 {
+      font-family: "Inter";
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.005em;
+      margin: 0 0 6px;
+    }
+    p { margin: 0 0 14px; color: var(--text); }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted color-mix(in srgb, var(--accent) 50%, transparent); }
+    a:hover { border-bottom-style: solid; }
+    code {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.88em;
+      background: var(--panel);
+      color: var(--accent);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    em { color: var(--accent); font-style: normal; font-weight: 600; }
+    strong { color: var(--text); font-weight: 600; }
+    ul, ol { margin: 0 0 14px; padding-left: 20px; }
+    li { margin-bottom: 6px; }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    /* ============ Layout ============ */
+    .page {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      max-width: 1280px;
+      margin: 0 auto;
+      gap: 56px;
+      padding: 0 32px;
+    }
+    @media (max-width: 900px) {
+      .page { grid-template-columns: 1fr; gap: 24px; }
+      .toc { position: static !important; max-height: none !important; }
+    }
+
+    /* ============ Sticky TOC ============ */
+    .toc {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 40px 0;
+      font-size: 13px;
+      border-right: 1px solid var(--border);
+    }
+    .toc .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-right: 24px;
+      margin-bottom: 24px;
+    }
+    .toc .brand .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 24px 2px rgba(129,140,248,0.45);
+    }
+    .toc .brand .name {
+      font-family: "Fraunces";
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--text);
+    }
+    .toc .brand .sub {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+    .toc ul { list-style: none; margin: 0; padding: 0; padding-right: 12px; }
+    .toc li { margin: 0; }
+    .toc a {
+      display: block;
+      padding: 5px 12px 5px 0;
+      color: var(--text-dim);
+      border-bottom: none;
+      border-left: 2px solid transparent;
+      padding-left: 12px;
+      margin-left: -2px;
+      transition: color 0.1s ease, border-color 0.1s ease;
+    }
+    .toc a:hover { color: var(--text); }
+    .toc a.active { color: var(--accent); border-left-color: var(--accent); }
+    .toc .group {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin: 18px 0 6px;
+      padding-left: 12px;
+    }
+    .toc .group:first-of-type { margin-top: 0; }
+    .toc .footer-note {
+      margin-top: 28px;
+      padding: 16px 12px 0;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-faint);
+      line-height: 1.5;
+    }
+
+    /* ============ Content column ============ */
+    .content { padding: 40px 0 80px; min-width: 0; }
+
+    /* Hero */
+    .hero {
+      padding: 28px 0 28px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+    .hero h1 {
+      font-size: 56px;
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      line-height: 1.05;
+      margin-bottom: 14px;
+    }
+    .hero h1 .accent { color: var(--accent); }
+    .hero .lead {
+      font-size: 20px;
+      color: var(--text-dim);
+      max-width: 60ch;
+      line-height: 1.5;
+    }
+    .hero .meta {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: var(--text-faint);
+    }
+    .hero .meta .badge {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    /* Section */
+    section { padding: 28px 0; scroll-margin-top: 16px; }
+    section + section { border-top: 1px solid var(--border); }
+
+    /* Numbered step card */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 18px 0 24px;
+    }
+    .step {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 18px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      transition: border-color 0.1s ease;
+    }
+    .step:hover { border-color: rgba(129,140,248,0.4); }
+    .step-num {
+      font-family: "Fraunces";
+      font-weight: 900;
+      font-size: 40px;
+      line-height: 1;
+      color: var(--accent);
+      letter-spacing: -0.04em;
+    }
+    .step h4 { margin: 6px 0; font-size: 17px; }
+    .step p { margin: 0 0 4px; font-size: 15px; color: var(--text-dim); line-height: 1.55; }
+    .step .hint {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--text-faint);
+      border-left: 2px solid var(--border);
+      padding-left: 10px;
+      font-style: italic;
+    }
+
+    /* Card row (roles, recipes) */
+    .card-row {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      margin: 14px 0 24px;
+    }
+    .card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      transition: border-color 0.1s ease, transform 0.1s ease;
+    }
+    .card:hover { border-color: rgba(129,140,248,0.4); transform: translateY(-2px); }
+    .card .role {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .card .role.vp { background: rgba(129,140,248,0.2); color: var(--accent); }
+    .card .role.dir { background: rgba(167,139,250,0.2); color: var(--purple); }
+    .card .role.pm { background: rgba(52,211,153,0.2); color: var(--accent-2); }
+    .card .role.em { background: rgba(251,191,36,0.2); color: var(--warn); }
+    .card .role.se { background: rgba(103,232,249,0.2); color: var(--cyan); }
+    .card h4 { font-size: 16px; margin-bottom: 8px; }
+    .card p { font-size: 14px; margin: 0; color: var(--text-dim); line-height: 1.5; }
+    .card ul { font-size: 14px; color: var(--text-dim); padding-left: 18px; margin: 6px 0 0; }
+    .card ul li { margin-bottom: 4px; }
+    .card .start {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Tab guide */
+    .tab-block {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 12px 0 18px;
+    }
+    .tab-block .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .tab-block .header .icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--panel);
+      border-radius: 8px;
+      font-size: 18px;
+    }
+    .tab-block .header h4 { font-size: 19px; font-family: "Fraunces"; font-weight: 700; }
+    .tab-block .header .sub { font-size: 13px; color: var(--text-faint); }
+    .tab-block .body p { font-size: 15px; color: var(--text-dim); }
+    .tab-block .body ul { font-size: 15px; color: var(--text-dim); }
+    .tab-block .body ul li { margin-bottom: 4px; }
+    .tab-block .body strong { color: var(--text); }
+    .tab-block .when {
+      background: var(--panel);
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px;
+      margin-top: 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 14px;
+    }
+    .tab-block .when .label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    /* Callout */
+    .callout {
+      background: rgba(129,140,248,0.10);
+      border: 1px solid rgba(129,140,248,0.35);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+    .callout strong { color: #c7d2fe; }
+    .callout.warn {
+      background: rgba(251,191,36,0.08);
+      border-color: rgba(251,191,36,0.35);
+    }
+    .callout.warn strong { color: var(--warn); }
+    .callout kbd {
+      display: inline-block;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0 6px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    /* FAQ */
+    .faq { margin: 18px 0; }
+    .faq details {
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+    .faq details:last-child { border-bottom: none; }
+    .faq summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+      list-style: none;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::before {
+      content: "›";
+      display: inline-block;
+      color: var(--accent);
+      font-size: 22px;
+      width: 16px;
+      transition: transform 0.15s ease;
+      line-height: 0.8;
+    }
+    .faq details[open] summary::before { transform: rotate(90deg); }
+    .faq .answer {
+      margin-top: 10px;
+      padding-left: 28px;
+      color: var(--text-dim);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    /* Footer */
+    .doc-footer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text-faint);
+    }
+
+    /* Inline UI mock (for screenshots-as-code) */
+    .mock {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin: 14px 0;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+    .mock .crumb { color: var(--text-faint); }
+    .mock .button {
+      display: inline-block;
+      background: var(--accent);
+      color: #0b0f1a;
+      padding: 3px 10px;
+      border-radius: 5px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .mock .button.secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- ============ STICKY TOC ============ -->
+    <nav class="toc" aria-label="On this page">
+      <div class="brand">
+        <div class="dot"></div>
+        <div>
+          <div class="name">InnoBrain</div>
+          <div class="sub">Onboarding Guide</div>
+        </div>
+      </div>
+
+      <div class="group">Start here</div>
+      <ul>
+        <li><a href="#welcome" class="active">Welcome</a></li>
+        <li><a href="#quickstart">5-minute quickstart</a></li>
+      </ul>
+
+      <div class="group">Find your path</div>
+      <ul>
+        <li><a href="#by-role">By your role</a></li>
+      </ul>
+
+      <div class="group">Each surface</div>
+      <ul>
+        <li><a href="#tab-conversations">Conversations</a></li>
+        <li><a href="#tab-playbooks">Playbooks</a></li>
+        <li><a href="#tab-foresight">ForeSight</a></li>
+        <li><a href="#tab-refine">Refine KB</a></li>
+        <li><a href="#tab-rubrics">Rubrics &amp; Memory</a></li>
+      </ul>
+
+      <div class="group">In practice</div>
+      <ul>
+        <li><a href="#recipes">Common recipes</a></li>
+        <li><a href="#faq">FAQ &amp; gotchas</a></li>
+      </ul>
+
+      <div class="footer-note">
+        Open the app at <code>localhost:8080</code>. Keep this guide open beside it.
+      </div>
+    </nav>
+
+    <!-- ============ CONTENT ============ -->
+    <main class="content">
+
+      <!-- HERO -->
+      <section id="welcome" class="hero">
+        <div class="eyebrow">Onboarding Guide · Q2 2026</div>
+        <h1>Make the brain<br><span class="accent">yours</span> in five minutes.</h1>
+        <p class="lead">
+          InnoBrain is your team's strategy brain — a workspace where your documents, your team's experience, and your simulated futures compound into reusable decisions. This guide walks you through the gestures that matter, by role and by surface.
+        </p>
+        <div class="meta">
+          <span class="badge">⏱ 5-minute quickstart</span>
+          <span class="badge">🧑‍💼 VP · Director · PM · EM · SE</span>
+          <span class="badge">📍 <code>localhost:8080</code></span>
+        </div>
+      </section>
+
+      <!-- QUICKSTART -->
+      <section id="quickstart">
+        <div class="eyebrow">First five minutes</div>
+        <h2>The Quickstart.</h2>
+        <p>Four steps. Each takes under a minute. By the end you'll have run a Playbook against your own data and seen InnoBrain's value first-hand.</p>
+
+        <div class="callout">
+          <strong>First visit?</strong> A welcome modal greets you on your first browser session and points you to create your workspace. You can revisit it any time via DevTools (<code>localStorage.removeItem('innobrain.user_initialized')</code>) or skip it with <kbd>Esc</kbd>. After that, a floating <strong>Quickstart</strong> checklist in the bottom-right tracks your progress through these four steps and <em>pulses the target UI</em> for whichever step is next.
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">01</div>
+            <div>
+              <h4>Create a workspace</h4>
+              <p>Navigate to <code>localhost:8080</code>. Click the <strong>WORKSPACE</strong> button at the top (now visibly accent-tinted) and create one for your team's domain — e.g. "Marketplace Strategy 2026". Workspaces are isolated brains; Sales' brain shouldn't mix with Engineering's.</p>
+              <span class="hint">The Quickstart checklist will pulse the workspace button for you.</span>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">02</div>
+            <div>
+              <h4>Add your first documents</h4>
+              <p>The left sidebar's <strong>📤 Upload files</strong> dropzone is the primary action. Drag in 2-5 of your most load-bearing docs — PDFs, decks, board memos. The graph builds in ~60 seconds per PDF. You can also <strong>🔗 Add by URL</strong>, <strong>💻 Add code repository</strong>, or <strong>🌐 Research the web</strong> from the same sidebar.</p>
+              <span class="hint">Five high-signal docs beats twenty mediocre ones. The dropzone pulses while it's your current step.</span>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">03</div>
+            <div>
+              <h4>Run your first Playbook</h4>
+              <p>Open the <strong>Playbooks</strong> tab (the checklist will highlight it) and pick <strong>Find unexplored ideas</strong>. The kickoff form shows three real scenarios — two grounded in your KB, one wildcard. Click the most interesting one. Hit Run. ~5 minutes later you'll have a typed Opportunity Scan. <em>This is the aha moment.</em></p>
+              <span class="hint">Your global Rubric + Memory are auto-applied. If the suggestions don't land, hit ↻ Refresh for a fresh set.</span>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">04</div>
+            <div>
+              <h4>Refine what the brain got wrong</h4>
+              <p>Open the <strong>Refine KB</strong> tab → Facts in the KB. Scan for anything stale or wrong. Click <strong>✎ Edit</strong>, fix it, save. The LLM cites your version — with your attribution — from then on. Code-derived facts (functions, classes) are hidden by default since they don't fit the refinement gesture; toggle <em>Show code nodes</em> if you need them.</p>
+              <span class="hint">First-week target: 5-10 refinements. After that, the brain starts feeling like yours.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>That's it.</strong> You've now created your own workspace, ingested your docs, run a real strategic analysis with your team's framing already applied, and shaped the brain with your own experience. Everything from here is variation on these four gestures.
+        </div>
+
+        <div class="callout warn">
+          <strong>📐 Rubric and 🧠 Memory are <em>global</em>.</strong> The Appfire Context rubric and the persistent memory store are shared across every workspace you create — no per-workspace setup needed. Edit them once from the header buttons, and every workspace inherits the change. Tune your Rubric when your company strategy shifts; add to Memory when context changes.
+        </div>
+      </section>
+
+      <!-- BY ROLE -->
+      <section id="by-role">
+        <div class="eyebrow">Find your path</div>
+        <h2>By your role.</h2>
+        <p>Different lenses, different gestures. Pick yours and use it as your default mode.</p>
+
+        <div class="card-row">
+          <div class="card">
+            <span class="role vp">VP</span>
+            <h4>Stress-test bets before committing.</h4>
+            <p>You make 5-10 high-leverage decisions a quarter. Your job: kill the bad ones before they kill you.</p>
+            <ul>
+              <li><strong>Run ForeSight</strong> before any major commitment</li>
+              <li><strong>Pressure-test strategy</strong> playbook for board-level bets</li>
+              <li>Use <strong>Build/Buy/Partner</strong> when capital allocation is on the table</li>
+            </ul>
+            <span class="start">→ Default tab: Playbooks</span>
+          </div>
+
+          <div class="card">
+            <span class="role dir">DIR</span>
+            <h4>Keep the brain fresh + aligned.</h4>
+            <p>You're the connective tissue. The KB has to stay current and the framing has to stay coherent or your team will diverge.</p>
+            <ul>
+              <li>Run <strong>Audit KB freshness</strong> weekly</li>
+              <li>Maintain the <strong>Rubric</strong> as the company evolves</li>
+              <li>Promote useful Conversation insights via <em>Save as KB fact</em></li>
+            </ul>
+            <span class="start">→ Default tab: Refine KB</span>
+          </div>
+
+          <div class="card">
+            <span class="role pm">PM</span>
+            <h4>Turn customer signal into shipped decisions.</h4>
+            <p>You live between buyer pain and engineering reality. Your job: connect them with evidence.</p>
+            <ul>
+              <li><strong>Draft a PRD</strong> playbook for v1 specs</li>
+              <li><strong>Plan a launch (GTM)</strong> for positioning + channels</li>
+              <li>Save every customer insight as a KB fact</li>
+            </ul>
+            <span class="start">→ Default tab: Playbooks → Draft a PRD</span>
+          </div>
+
+          <div class="card">
+            <span class="role em">EM</span>
+            <h4>Inject buildable reality into every plan.</h4>
+            <p>Strategy meetings often miss what's actually shippable. Your job: ground the plan in real engineering.</p>
+            <ul>
+              <li><strong>Codebase health</strong> playbook for technical audits</li>
+              <li><strong>Pre-mortem on a plan</strong> before sprint kickoff</li>
+              <li>Add engineering-reality dissents on overoptimistic claims</li>
+            </ul>
+            <span class="start">→ Default tab: Playbooks → Codebase health</span>
+          </div>
+
+          <div class="card">
+            <span class="role se">SE</span>
+            <h4>Spot what's wrong. Make it right.</h4>
+            <p>You see the actual edges of the codebase, the unspoken constraints, the things "everyone knows" that nobody wrote down. Capture them.</p>
+            <ul>
+              <li>Use <strong>Conversations</strong> as a thinking partner — durable threads</li>
+              <li>Hit <em>💡 save as KB fact</em> whenever you correct an answer</li>
+              <li>Run <strong>Find unexplored ideas</strong> for technical opportunity scans</li>
+            </ul>
+            <span class="start">→ Default tab: Conversations</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- TABS DEEP DIVE -->
+      <section id="tabs">
+        <div class="eyebrow">Each surface, what it's for</div>
+        <h2>The tabs, one at a time.</h2>
+        <p>Each tab does one job well. Pick the right one and you'll cut your time in half.</p>
+
+        <!-- Conversations -->
+        <div id="tab-conversations" class="tab-block">
+          <div class="header">
+            <div class="icon">💬</div>
+            <div>
+              <h4>Conversations</h4>
+              <div class="sub">Durable research threads, multi-turn, graph-grounded.</div>
+            </div>
+          </div>
+          <div class="body">
+            <p>Where you <em>think with the brain</em>. Each conversation is a thread you can revisit. Every answer is grounded in the graph + your refinements + your rubric.</p>
+            <ul>
+              <li><strong>New conversation</strong> → pick an <em>Intent</em> (Explore, Evaluate, Red-team, etc.) and a <em>Rubric</em> in the top bar.</li>
+              <li><strong>Pin</strong> key answers and key nodes so they survive across turns.</li>
+              <li><strong>💡 Save as KB fact</strong> on any answer captures it as a refinement with one click.</li>
+              <li><strong>Export report</strong> creates a clean markdown summary for sharing.</li>
+            </ul>
+            <div class="when">
+              <span class="label">When to use</span>
+              You're exploring, learning, or stress-testing. Not when you need a typed artifact — for that, use a Playbook.
+            </div>
+          </div>
+        </div>
+
+        <!-- Playbooks -->
+        <div id="tab-playbooks" class="tab-block">
+          <div class="header">
+            <div class="icon">📘</div>
+            <div>
+              <h4>Playbooks</h4>
+              <div class="sub">Multi-step workflows that emit a typed artifact.</div>
+            </div>
+          </div>
+          <div class="body">
+            <p>Where you <em>produce a brief</em>. A Playbook is a fixed chain of LLM steps that always ends in a typed artifact (Opportunity Scan, Strategy Brief, PRD Draft, Launch Plan, Codebase Audit, KB Health Report).</p>
+            <ul>
+              <li><strong>Kickoff form</strong> shows three suggested scenarios from your KB + one wildcard. Click to fill, edit if you want.</li>
+              <li><strong>Web grounding</strong> is on by default — turn off for sensitive runs.</li>
+              <li><strong>Fact-check</strong> adds a verification step at the cost of one extra LLM round.</li>
+              <li><strong>Comments &amp; refinement</strong> — every artifact is reviewable. Add a comment per section, click <em>↻ Refine with comments</em> for a new version.</li>
+              <li><strong>Compare versions</strong> — every refinement creates a new version with a diff view.</li>
+            </ul>
+            <div class="when">
+              <span class="label">When to use</span>
+              You need an output that survives the meeting — something to share, version, and reference later.
+            </div>
+          </div>
+        </div>
+
+        <!-- ForeSight -->
+        <div id="tab-foresight" class="tab-block">
+          <div class="header">
+            <div class="icon">🔮</div>
+            <div>
+              <h4>ForeSight</h4>
+              <div class="sub">Multi-persona simulation across five horizons.</div>
+            </div>
+          </div>
+          <div class="body">
+            <p>Where you <em>see the future before it happens</em>. ForeSight runs a multi-round debate across up to 12 personas (Bull, Bear, Customer, Competitor, Regulator, Investor, …) at the horizon you choose.</p>
+            <ul>
+              <li><strong>Pick personas</strong> — usually 4 to 7. More than 7 dilutes the signal.</li>
+              <li><strong>Pick a horizon</strong> — 3mo for tactical, 1y for go-to-market, 3y+ for category bets.</li>
+              <li><strong>Multi-round</strong> — Round 2+ personas see Round 1. Positions evolve. Convergence AND disagreement get surfaced.</li>
+              <li>Output saves as a <strong>Strategy Brief</strong> artifact you can revisit.</li>
+            </ul>
+            <div class="when">
+              <span class="label">When to use</span>
+              Before any commitment your team can't easily reverse — a hire, a bet, a launch, an acquisition.
+            </div>
+          </div>
+        </div>
+
+        <!-- Refine KB -->
+        <div id="tab-refine" class="tab-block">
+          <div class="header">
+            <div class="icon">🧬</div>
+            <div>
+              <h4>Refine KB</h4>
+              <div class="sub">Edit the present truth. Restore the original any time.</div>
+            </div>
+          </div>
+          <div class="body">
+            <p>Where you <em>shape the brain</em>. Two sub-tabs:</p>
+            <ul>
+              <li><strong>Facts in the KB</strong> — every fact the brain currently believes. The view the LLM sees when it answers. Click <strong>✎ Edit</strong> on any row to fix it. Filter by topic, source file, "edited only", or "stale ≥6 months".</li>
+              <li><strong>My refinements</strong> — your edits history. Filter by kind (Fix · Add · Confirm · Doubt) or search.</li>
+            </ul>
+            <p>Four refinement kinds:</p>
+            <ul>
+              <li><strong>Fix</strong> — replace what the KB got wrong</li>
+              <li><strong>Add</strong> — inject facts the corpus is silent on</li>
+              <li><strong>Confirm</strong> — vouch for a fact you've verified</li>
+              <li><strong>Doubt</strong> — flag a claim without overriding</li>
+            </ul>
+            <div class="when">
+              <span class="label">When to use</span>
+              Any time you spot something wrong, missing, or stale. The cheapest gesture in the app — under 30 seconds — and it compounds for the whole team.
+            </div>
+          </div>
+        </div>
+
+        <!-- Rubrics & Memory -->
+        <div id="tab-rubrics" class="tab-block">
+          <div class="header">
+            <div class="icon">📐</div>
+            <div>
+              <h4>Rubrics &amp; Memory</h4>
+              <div class="sub">Global rules of the game, applied to every answer in every workspace.</div>
+            </div>
+          </div>
+          <div class="body">
+            <p>Both live in the app header — visible from every tab — and both are <em>global across all workspaces</em>. They power every LLM call across Conversations, Playbooks, ForeSight, Ask Graph, and Explain Node. No per-workspace setup needed.</p>
+            <ul>
+              <li><strong>📐 Rubrics</strong> — company-specific framing rules. The default Appfire Context rubric covers capital constraints, anti-Sherlocking tests, distribution leverage, regulatory tailwinds, audit honesty, decisiveness. Edit it once; the LLM's whole personality shifts across every workspace.</li>
+              <li><strong>🧠 Memory</strong> — durable user-asserted facts that flavor every answer. "We're in a hiring freeze." "Our Q3 priority is renewals." "Filip is the source of truth on Marketplace."</li>
+            </ul>
+            <div class="when">
+              <span class="label">When to use</span>
+              Set Rubrics once per quarter. Add Memory entries when context shifts — and every workspace absorbs the new reality immediately.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RECIPES -->
+      <section id="recipes">
+        <div class="eyebrow">Common recipes</div>
+        <h2>What good usage looks like.</h2>
+        <p>Stop staring at a blank box. These are the patterns we've seen power-users settle into.</p>
+
+        <div class="card-row">
+          <div class="card">
+            <h4>🗓 Pre-meeting prep</h4>
+            <p style="margin-bottom: 8px;">Two hours before any strategy meeting:</p>
+            <ul>
+              <li>Run <strong>Pressure-test strategy</strong> with the meeting's central question</li>
+              <li>Skim the Strategy Brief; pull the convergent + divergent claims</li>
+              <li>Walk into the meeting with the meeting's <em>worst</em> objections already mapped</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h4>📝 Post-meeting capture</h4>
+            <p style="margin-bottom: 8px;">Within 24 hours of any decision-heavy meeting:</p>
+            <ul>
+              <li>Open a Conversation, paste the key decisions made</li>
+              <li>For each decision, click <em>💡 Save as KB fact</em></li>
+              <li>The brain now reflects today's reality, not last quarter's</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h4>🩺 Quarterly KB refresh</h4>
+            <p style="margin-bottom: 8px;">First Monday of each quarter:</p>
+            <ul>
+              <li>Run <strong>Audit KB freshness</strong> playbook</li>
+              <li>Walk the proposed corrections; apply the ones you trust</li>
+              <li>Re-upload any document that's had a major revision</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h4>🧑‍🎓 New hire onboarding</h4>
+            <p style="margin-bottom: 8px;">Their first week:</p>
+            <ul>
+              <li>Walk them through <em>Refine KB → Facts in the KB</em> by community</li>
+              <li>Have them run <strong>Explore</strong> conversations on the top three themes</li>
+              <li>By end of week, they should have added 3+ "Confirm" refinements</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h4>💡 Idea sourcing</h4>
+            <p style="margin-bottom: 8px;">When the roadmap needs fresh input:</p>
+            <ul>
+              <li>Run <strong>Find unexplored ideas</strong> with web grounding ON</li>
+              <li>Pay extra attention to the wildcard chip — that's the seed of next quarter's bet</li>
+              <li>Send the Opportunity Scan to your design partners as a discussion prompt</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h4>🧯 Pre-mortem before committing</h4>
+            <p style="margin-bottom: 8px;">Any irreversible decision:</p>
+            <ul>
+              <li>Run <strong>Pre-mortem on a plan</strong> playbook</li>
+              <li>Add a <em>Doubt</em> refinement on the riskiest claim it surfaces</li>
+              <li>Bring the artifact to the commit meeting — let dissent be visible, not hidden</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq">
+        <div class="eyebrow">FAQ &amp; gotchas</div>
+        <h2>Common questions.</h2>
+
+        <div class="faq">
+          <details open>
+            <summary>Where's my answer actually coming from?</summary>
+            <div class="answer">
+              Every assistant turn carries badges that tell you the source: <em>graph-grounded</em> (corpus), <em>general knowledge</em> (LLM background), <em>graph silent</em> (no KB hit), <em>web-verified</em> (Anthropic web search), <em>memory</em> (your persistent memory injected). If a Refinement applies, the answer cites it inline with your attribution. Be wary of "general knowledge" answers — they're not corpus-grounded, just the LLM's prior.
+            </div>
+          </details>
+
+          <details>
+            <summary>How do I undo a refinement?</summary>
+            <div class="answer">
+              Open <strong>Refine KB → My refinements</strong>, find the row, click <strong>Delete</strong>. The original graph extraction resurfaces immediately. For corrections specifically, you can also use the "Restore default" button when editing. The graph itself is never mutated; refinements are a layer above it.
+            </div>
+          </details>
+
+          <details>
+            <summary>Why is the LLM expensive sometimes?</summary>
+            <div class="answer">
+              Most calls use Claude Haiku (cheap, fast). Playbooks default to Sonnet for the synthesis step — high quality. Inference strategies like Best-of-3 and CoVe multiply token cost 2-4x. If a Playbook run is taking long or you're worried about cost, turn off <em>Web grounding</em> and <em>Fact-check</em> on the kickoff form.
+            </div>
+          </details>
+
+          <details>
+            <summary>Can I edit a built-in Playbook?</summary>
+            <div class="answer">
+              Yes. Open <strong>Playbooks → Builder</strong>, click a built-in, hit <strong>Edit (override)</strong>. Your edit overrides the built-in for this workspace. The original lives in code so you can <em>Restore default</em> any time. Same pattern works for built-in Intents, Personas, and Rubrics.
+            </div>
+          </details>
+
+          <details>
+            <summary>How do I keep the KB clean as our docs change?</summary>
+            <div class="answer">
+              Re-upload the document under the same name. The graph rebuilds; the diff banner in <strong>Refine KB</strong> tells you what changed (added / removed / relabeled nodes). Any refinements you wrote against removed nodes get flagged as orphaned for re-attachment.
+            </div>
+          </details>
+
+          <details>
+            <summary>Should the Rubric be the same for every team?</summary>
+            <div class="answer">
+              No. Workspaces are isolated and each can have its own Rubric. Sales' brain probably wants "we sell to mid-market US healthcare" framing; Engineering's brain wants "we own platform reliability, not customer empathy." That's the point.
+            </div>
+          </details>
+
+          <details>
+            <summary>What's the right cadence for running Playbooks?</summary>
+            <div class="answer">
+              <strong>Pre-meeting Pressure-test:</strong> 2 hours before any decision meeting.<br>
+              <strong>Find unexplored ideas:</strong> once a month, or whenever the roadmap feels stale.<br>
+              <strong>Audit KB freshness:</strong> once a quarter (first Monday).<br>
+              <strong>ForeSight:</strong> before any commitment you can't easily reverse.<br>
+              <strong>Codebase health:</strong> before any major architectural decision.
+            </div>
+          </details>
+
+          <details>
+            <summary>What if the LLM is just wrong?</summary>
+            <div class="answer">
+              Click <em>💡 save as KB fact</em> on the wrong answer. Pick "Fix". Type the right answer. From then on, every future answer that touches the same nodes will cite your correction. The brain learns from you — that's the whole design.
+            </div>
+          </details>
+        </div>
+
+        <div class="callout warn">
+          <strong>One last thing.</strong> InnoBrain isn't a search engine and it isn't a chatbot. It's a <em>shared brain</em>. Its quality is a function of what your team puts into it — documents, refinements, memory, rubric. Treat it like a team member who needs onboarding. The first month is investment; from month two onward it pays you back.
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="doc-footer">
+        <p>InnoBrain · A strategy brain for your team. Hosted at <code>localhost:8080</code>. Questions: ping the team channel or open this guide alongside the app.</p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // ============ Scroll-spy: highlight TOC link for the section in view ============
+    (() => {
+      const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+      const map = new Map();
+      links.forEach(a => {
+        const id = a.getAttribute('href').slice(1);
+        const target = document.getElementById(id);
+        if (target) map.set(target, a);
+      });
+      if (map.size === 0) return;
+
+      const observer = new IntersectionObserver(entries => {
+        // Prefer entries that are near the top of the viewport.
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length === 0) return;
+        const topMost = visible[0].target;
+        links.forEach(l => l.classList.remove('active'));
+        const link = map.get(topMost);
+        if (link) link.classList.add('active');
+      }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+
+      map.forEach((_link, section) => observer.observe(section));
+
+      // Smooth scroll
+      links.forEach(a => a.addEventListener('click', e => {
+        e.preventDefault();
+        const id = a.getAttribute('href').slice(1);
+        const target = document.getElementById(id);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', `#${id}`);
+      }));
+    })();
+  </script>
+</body>
+</html>

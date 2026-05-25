@@ -1,0 +1,91 @@
+# =============================================================
+# InnoBrain .gitignore
+# =============================================================
+
+# --- Secrets ---------------------------------------------------
+backend/.env
+backend/.env.*
+!backend/.env.example
+*.pem
+*.key
+
+# --- Runtime workspace data -----------------------------------
+# Per-workspace state: graphs, conversations, memory, rubrics,
+# artifacts, playbook runs, ForeSight sessions. All user-generated
+# and re-creatable; never committed.
+backend/data/
+!backend/data/.gitkeep
+
+# Background-job state + indexing artifacts.
+backend/index_jobs.json
+backend/graphify-out/
+
+# --- Source corpora (large PDFs, screenshots) -----------------
+# Kept locally for development but not committed. Drop the
+# real research material under source-docs/ on a fresh clone.
+source-docs/
+.shots/
+guide-tab-rendered.png
+
+# --- Python ----------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.tox/
+.coverage
+htmlcov/
+*.cover
+*.log
+
+# Virtual envs
+.venv/
+venv/
+env/
+.python-version
+
+# --- Node / Vite -----------------------------------------------
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/tsconfig.tsbuildinfo
+frontend/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Editor / IDE ---------------------------------------------
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+
+# --- OS --------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# --- Local agent / tool state ---------------------------------
+.claude/
+!.claude/settings.json
+
+# ngrok local logs
+ngrok.yml
+*.ngrok.log
+
+# --- Misc ------------------------------------------------------
+*.bak
+*.tmp
+.cache/
