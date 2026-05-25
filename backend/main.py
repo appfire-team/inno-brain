@@ -2233,7 +2233,7 @@ def artifacts_refine(
 
 
 # --- Static frontend --------------------------------------------------------
-# Built React assets land in app/frontend/dist. If the build doesn't exist yet
+# Built React assets land in frontend/dist. If the build doesn't exist yet
 # (e.g. backend is started before `npm run build`), the API still works on its own.
 
 FRONTEND_DIR = Path(__file__).parent.parent / "frontend" / "dist"
@@ -2253,7 +2253,7 @@ else:
     @app.get("/")
     def root_no_frontend() -> dict:
         return {
-            "message": "Frontend not built yet. Run `npm run build` in app/frontend.",
+            "message": "Frontend not built yet. Run `npm run build` in frontend/.",
             "api_docs": "/docs",
         }
 

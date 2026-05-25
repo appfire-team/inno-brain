@@ -1,6 +1,6 @@
 # CLAUDE.md — guidance for AI coding assistants in this repo
 
-This file orients agents (Claude Code, etc.) working in `app/`. It captures
+This file orients agents (Claude Code, etc.) working in this repo. It captures
 conventions and non-obvious wiring that you can't infer from a single file.
 For the full architecture overview, read [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -18,7 +18,7 @@ Major surfaces in the UI (each is a tab in `frontend/src/App.tsx`):
 ## Project layout
 
 ```
-app/
+.
 ├── backend/
 │   ├── main.py                 # FastAPI routes; thin — delegates to modules below
 │   ├── graphify_runner.py      # Pipeline orchestration + query_graph + rich_query
@@ -33,9 +33,10 @@ app/
 │   ├── foresight.py            # Multi-persona scenario sessions
 │   ├── simulate.py             # Inline conversation simulation
 │   ├── kb_corrections.py       # Human refinements on graph nodes/edges
+│   ├── entity_extract.py       # Deterministic entity typing + role edges
 │   ├── embeddings.py           # Optional semantic-vector index (OpenAI / Voyage)
 │   ├── index_jobs.py           # Background-rebuild job tracker
-│   └── data/                   # Runtime data (gitignored — see README §"Data layout")
+│   └── data/                   # Runtime data (gitignored — see README "Data layout")
 └── frontend/
     └── src/
         ├── App.tsx             # Shell: workspace switcher, tabs, drawers
@@ -123,14 +124,14 @@ Current canonical model IDs (as of writing):
 
 ```bash
 # Backend (reload mode on by default)
-cd app/backend && python3 main.py     # → http://localhost:8000
+cd backend && python3 main.py     # → http://localhost:8000
 
 # Frontend dev (HMR; proxies /api → 8000)
-cd app/frontend && npm run dev        # → http://localhost:5173
+cd frontend && npm run dev        # → http://localhost:5173
 
 # Production-style build
-cd app/frontend && npm run build      # writes frontend/dist/
-cd app/backend  && python3 main.py    # serves both API + static SPA
+cd frontend && npm run build      # writes frontend/dist/
+cd backend  && python3 main.py    # serves both API + static SPA
 ```
 
 There is no automated test suite. Verify changes by:

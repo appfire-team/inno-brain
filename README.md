@@ -1,94 +1,171 @@
-# InnoBrain (graphify web)
+# InnoBrain
 
-Browser-based knowledge-graph workbench. Upload documents, code repos, or URLs;
-the backend extracts a graph with Anthropic Claude and exposes it through
-conversations, multi-step playbooks, scenario simulations (ForeSight), and
-typed artifacts.
+**Turn a folder of PDFs, code, and links into an interactive knowledge graph
+you can chat with.**
 
-The UI brand is **InnoBrain**; the repo + package names use **graphify web**.
+You upload documents (PDFs, markdown, images, code repos, URLs). InnoBrain
+asks Claude to read them, pulls out the important *concepts* and the
+*relationships between them*, and stores everything as a graph you can
+explore, query, and refine by hand. Then you can:
 
-See [`ARCHITECTURE.md`](ARCHITECTURE.md) for a deep dive into components,
-pipeline stages, and data contracts. See [`COMPANY_BRAIN_ROADMAP.md`](COMPANY_BRAIN_ROADMAP.md)
-for the product direction.
+- chat with the graph and get cited, sourced answers
+- run multi-step "playbooks" that produce typed outputs (a PRD draft, a
+  build-vs-buy decision, an opportunity scan, a launch plan…)
+- pressure-test ideas through scenarios with multiple AI personas (ForeSight)
+- correct the graph when it gets a fact wrong — your edits stick
 
-## Stack
+It runs as one process on your laptop. No database, no cloud account
+beyond an Anthropic API key.
 
-- **Backend** — FastAPI (Python 3.10+). One process serves the REST API at
-  `/api/*` and (in prod) the built React assets. Uses the `graphifyy` library
-  for the deterministic graph pipeline and Claude for extraction / linking /
-  labeling / answer synthesis.
-- **Frontend** — Vite + React 18 + TypeScript. `react-force-graph-2d` for
-  the graph view, `react-markdown` + `mermaid` for rich answers.
-- **Storage** — Local filesystem under `backend/data/`. Workspaces are
-  isolated subtrees; there is no database.
-- **LLM** — `ANTHROPIC_API_KEY` required for extraction and every LLM
-  feature. Optional `OPENAI_API_KEY` / `VOYAGE_API_KEY` enables the
-  semantic-vector retrieval index (otherwise the embeddings module no-ops).
+![Guide tab](guide-tab-rendered.png)
 
-## What's in here
+> Brand note: the product is **InnoBrain** in the UI; the codebase was
+> originally called **graphify web**, and the GitHub repo is
+> [`appfire-team/inno-brain`](https://github.com/appfire-team/inno-brain).
 
-| Surface | What it does |
-|---------|--------------|
-| **Conversations** | Threaded chat grounded in the graph + persistent memory + rubrics + optional web grounding. Inference strategies: `none`, `reflection`, `cove`, `best_of_3`. |
-| **Playbooks** | Multi-step LLM workflows that produce typed **Artifacts** (OpportunityScan, PRDDraft, BuildBuyDecision, LaunchPlan, …). Built-ins + user-defined; runs are resumable, cancellable, and re-refinable via reviewer comments. |
-| **ForeSight** | Multi-persona scenario sessions across horizons (6mo / 1y / 3y). Personas are presets + user-defined; sessions can borrow context from a conversation. |
-| **Ask Graph** | One-shot BFS/DFS query over the graph with optional synthesized answer. |
-| **Graph / Communities / Path / Insights** | Force-directed visualization, labeled clusters, shortest-path explorer, and precomputed god-nodes / surprises / suggested questions. |
-| **Refine KB** | Human corrections + attestations on graph nodes/edges, surfaced into future LLM answers. |
-| **Workspaces** | First-class isolation: each workspace has its own `raw/`, graph, conversations, memory, rubrics, artifacts, playbook runs, ForeSight sessions. |
+---
 
-## One-time setup
+## Quickstart (5 minutes)
+
+**Prerequisites**
+
+- Python **3.10+**
+- Node **18+** and npm
+- An Anthropic API key — get one at https://console.anthropic.com
+- macOS or Linux (Windows: works under WSL2)
+
+**Steps**
 
 ```bash
-# Backend
-cd app/backend
-cp .env.example .env
-# Edit .env and set ANTHROPIC_API_KEY=sk-ant-...
-python3 -m pip install -r requirements.txt --break-system-packages
+git clone https://github.com/appfire-team/inno-brain.git
+cd inno-brain
 
-# Frontend
+# 1. Backend: install deps and add your API key
+cd backend
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+# Open .env and paste your key into ANTHROPIC_API_KEY=
+
+# 2. Frontend: install + build
 cd ../frontend
 npm install
 npm run build
+
+# 3. Run (one process serves API + UI)
+cd ../backend
+python3 main.py
 ```
 
-## Run
+Open <http://localhost:8000>. That's it.
+
+> Prefer not to use a venv? You can run `pip install -r requirements.txt`
+> directly, but on macOS Homebrew-managed Python you'll need to add
+> `--break-system-packages`. The venv path above avoids that footgun.
+
+---
+
+## Your first 60 seconds in the app
+
+1. The UI opens on the **Conversations** tab with a Default workspace.
+2. In the left **Sidebar**, drag a PDF or click **Upload**. A background job
+   indexes it (you'll see a banner). For small docs this takes ~30 seconds.
+3. Once indexed, type a question in the chat: *"Summarize the main
+   argument."* The answer comes with citations to the source filename and
+   a `gaps` block listing things the graph doesn't know.
+4. Click the **Graph** tab to see the document as a network. Click any node
+   to open the **Explain drawer**.
+5. Try the **Communities** tab — clusters of related concepts the system
+   discovered and labeled.
+
+When something is wrong, go to **Refine KB** and add a correction — it
+overlays on top of the graph and shows up in future answers without
+re-running the pipeline.
+
+---
+
+## The tabs at a glance
+
+| Tab | What it does |
+|-----|--------------|
+| **Conversations** | Threaded chat over the graph. Pick an intent (explore / decide / challenge…) and an inference strategy (`reflection`, `cove`, `best_of_3`) per thread. Optional web grounding. |
+| **Playbooks** | Multi-step workflows that produce **Artifacts** — e.g. `OpportunityScan`, `PRDDraft`, `BuildBuyDecision`, `LaunchPlan`, `PremortemPlan`, `CodebaseHealth`. Runs are resumable, cancellable, and refinable via reviewer comments. |
+| **ForeSight** | Multi-persona scenario sessions across horizons (6mo / 1y / 3y). Pick from preset personas (bull, bear, customer, competitor…) or define your own. |
+| **Artifacts** | The library of typed outputs produced by playbooks, plus manual notes. Each artifact supports Q&A, simplification, comments, and inline refinement. |
+| **Ask Graph** | One-shot BFS/DFS query — lighter than a full conversation turn, good for "what nodes mention X?" probes. |
+| **Graph** | Force-directed 2D visualization. Click nodes to explain; filter by community. |
+| **Communities** | Louvain-clustered groups of related concepts, auto-labeled by Claude. |
+| **Insights** | Precomputed "god nodes" (hubs), surprising cross-community links, and suggested questions. |
+| **Path** | Shortest path between any two concepts in the graph. |
+| **Refine KB** | Human corrections (Fix / Add / Confirm / Doubt) that overlay the graph at read time. Your edits never modify the underlying extraction. |
+| **Guide** | In-app onboarding + user guide. |
+
+The header has a **workspace switcher** — workspaces are fully isolated
+corpora (their own docs, graph, conversations, memory, artifacts).
+
+---
+
+## Run modes
+
+**Production-style (one port, recommended for sharing via ngrok):**
 
 ```bash
-# Single-process (API + built static SPA)
-cd app/backend
-python3 main.py
-# → http://localhost:8000 — interactive API docs at /docs
-
-# Optional public URL
-ngrok http 8000
+cd frontend && npm run build
+cd ../backend && python3 main.py
+# → http://localhost:8000 (API + built UI)
+ngrok http 8000        # optional public URL
 ```
 
-## Dev mode (HMR for the frontend)
+**Dev mode (HMR for the frontend):**
 
 ```bash
 # Terminal 1
-cd app/backend && python3 main.py
+cd backend && python3 main.py
 
 # Terminal 2
-cd app/frontend && npm run dev
+cd frontend && npm run dev
 # → http://localhost:5173 (Vite proxies /api → :8000)
 ```
 
-`uvicorn` is launched with `reload=True` by default. Set
-`UVICORN_NO_RELOAD=1` to disable, e.g. when running under a debugger.
+`uvicorn` runs with `reload=True` by default. Set `UVICORN_NO_RELOAD=1`
+to disable it (e.g. when running under a debugger).
+
+---
+
+## Configuration
+
+Set in `backend/.env`. Full list lives in [`ARCHITECTURE.md` §9](ARCHITECTURE.md#9-configuration); the most-used knobs:
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `ANTHROPIC_API_KEY` | — | **Required.** All LLM features depend on this. |
+| `GRAPHIFY_MODEL` | `claude-sonnet-4-6` | Per-document semantic extraction |
+| `GRAPHIFY_ANSWER_MODEL` | `claude-haiku-4-5-20251001` | Default Q&A + explain synthesis |
+| `GRAPHIFY_CONCURRENCY` | `3` | Parallel extraction workers |
+| `GRAPHIFY_AUTOLINK` | `1` | Run cross-doc linker on rebuild (`0` to skip) |
+| `OPENAI_API_KEY` / `VOYAGE_API_KEY` | — | Enable the optional semantic-vector index |
+| `PORT` | `8000` | uvicorn listen port |
+| `UVICORN_NO_RELOAD` | `0` | Set `1` to disable reload mode |
+
+Model IDs the UI lets users pick are pinned in `backend/main.py` (`ANSWER_MODELS`):
+`claude-haiku-4-5-20251001`, `claude-sonnet-4-6`, `claude-opus-4-7`.
+
+---
 
 ## Data layout
 
-Everything is under `backend/data/` and gitignored:
+Everything lives under `backend/data/` and is gitignored:
 
 ```
 backend/data/
 ├── workspaces/<ws-id>/        # one subtree per workspace
+│   ├── workspace.json         # name, created_at, source_workspace_id
 │   ├── raw/                   # uploaded docs, ingested URLs, copied repos
 │   ├── graphify-out/
 │   │   ├── graph.json         # NetworkX node-link export
-│   │   └── insights.json      # gods, surprises, communities, questions
+│   │   ├── insights.json      # gods, surprises, communities, questions
+│   │   ├── embeddings.npz     # optional vector index
+│   │   └── sem-cache/         # extraction cache keyed by file hash
 │   ├── conversations/         # one JSON per thread
 │   ├── artifacts/             # typed outputs from playbooks + manual notes
 │   ├── playbook_runs/         # run state, step traces, resume cursors
@@ -96,43 +173,54 @@ backend/data/
 │   ├── rubrics/               # overrides + workspace-only rubrics
 │   ├── intents/               # custom + overridden conversation intents
 │   ├── playbooks/             # custom + overridden playbook definitions
-│   ├── memory.json            # durable facts injected into every turn
-│   └── kb_corrections.json    # human refinements on graph nodes/edges
+│   ├── kb_corrections/        # human refinements on nodes/edges
+│   └── memory.json            # durable facts injected into every turn
 ├── global_intents/            # cross-workspace user-defined intents
 ├── global_playbooks/          # cross-workspace user-defined playbooks
-├── foresight_personas/        # user-defined / customized personas
-└── rubrics/                   # legacy / pre-workspace rubrics
+└── foresight_personas/        # user-defined personas (shared across workspaces)
 ```
 
-API clients select a workspace by sending `X-Workspace-Id: <ws-id>`. With no
-header, the most-recently-updated workspace wins. A `default` workspace is
-created automatically on first run (and existing pre-workspace data is
+API clients select a workspace by sending `X-Workspace-Id: <ws-id>`. With
+no header, the most-recently-updated workspace wins. A `default` workspace
+is created automatically on first run (and any pre-workspace data is
 migrated into it).
 
-## Configuration
+---
 
-Set in `backend/.env`. The full list lives in `ARCHITECTURE.md §9`; the
-most-used knobs are:
+## What's *not* here
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `ANTHROPIC_API_KEY` | — | Required |
-| `GRAPHIFY_MODEL` | `claude-sonnet-4-6` | Per-document semantic extraction |
-| `GRAPHIFY_ANSWER_MODEL` | `claude-haiku-4-5-20251001` | Default Q&A / explain synth |
-| `GRAPHIFY_CONCURRENCY` | `3` | Parallel extraction workers |
-| `GRAPHIFY_AUTOLINK` | `1` | Run cross-doc linker on rebuild (`0` to skip) |
-| `OPENAI_API_KEY` / `VOYAGE_API_KEY` | — | Enable the semantic-vector index |
-| `PORT` | `8000` | uvicorn listen port |
-| `UVICORN_NO_RELOAD` | `0` | Set `1` to disable reload mode |
+- **No database.** Per-workspace JSON on local disk is the entire storage
+  model. This is deliberate — single-tenant, demo-friendly, trivial to
+  inspect and back up.
+- **No authentication.** CORS is wide open. Both are conscious tradeoffs
+  for the local + ngrok deployment model — see [`ARCHITECTURE.md` §11](ARCHITECTURE.md#11-security-and-operational-notes) before exposing publicly.
+- **No automated test suite.** Verify changes with `npm run build`
+  (catches TS regressions via `tsc -b`), `curl http://localhost:8000/api/...`,
+  the `/docs` Swagger UI, and the matching panel in the app.
 
-## Notes for operators
+---
 
-- Permissive CORS (`*`) is intentional for local Vite dev. Tighten it
-  before exposing the API publicly.
-- Uploads cap at 50 MB per file; empty files are skipped.
-- Long-running rebuilds run on a background thread; `/api/index-job`
-  exposes status for the UI banner. Orphaned runs (from a prior process)
-  are swept to `failed` on startup.
-- `truststore.inject_into_ssl()` routes TLS through the OS trust store
-  so corporate MITM proxies (e.g. Netskope) don't break the Anthropic
-  client.
+## Troubleshooting
+
+| Symptom | Likely cause / fix |
+|---------|--------------------|
+| `Frontend not built yet. Run npm run build in frontend/.` at `/` | You started the backend without building the frontend. Run `cd frontend && npm run build`. The API still works at `/docs`. |
+| `Address already in use: 8000` | Another process holds the port. `lsof -i :8000` to find it, or set `PORT=8001`. |
+| Upload returns `meta.error: 'ANTHROPIC_API_KEY missing'` | `.env` not loaded. Confirm `backend/.env` exists and contains a valid key, then restart the backend. |
+| Pipeline hangs at "extracting…" forever | Check `/api/index-job` for status. Large PDFs take ~60s each; many docs run in parallel up to `GRAPHIFY_CONCURRENCY`. |
+| TLS errors when calling Anthropic from a corporate network | `truststore.inject_into_ssl()` is already wired in `main.py` — make sure your OS trust store has the corporate root cert (Netskope, ZScaler, etc.). |
+| `pip install` complains about `externally-managed-environment` | macOS Homebrew Python. Use the `python3 -m venv .venv` step from Quickstart, or add `--break-system-packages` (not recommended). |
+| Graph looks empty after upload | The pipeline may still be running. The header pill shows node count; refresh after the job banner disappears. |
+
+---
+
+## Where to read next
+
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — components, data contracts, pipeline stages, API reference.
+- **[HOW_IT_WORKS.md](HOW_IT_WORKS.md)** — plain-language "lego" walkthrough of ingest + query.
+- **[COMPANY_BRAIN_ROADMAP.md](COMPANY_BRAIN_ROADMAP.md)** — product direction.
+- **[COMPANY_BRAIN_USECASES.md](COMPANY_BRAIN_USECASES.md)** — target workflows.
+- **[CLAUDE.md](CLAUDE.md)** — conventions for AI coding agents working in this repo.
+
+For the interactive API reference, run the backend and open
+<http://localhost:8000/docs>.
