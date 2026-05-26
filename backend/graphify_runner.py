@@ -1670,15 +1670,15 @@ def _synthesize_with_history(
             "sentences max, no preamble, no filler.** If the user clearly needs corpus "
             "content but the graph couldn't help, say so in one line."
         ) + intent_block + rubric_block
+        user_content = (
+            (f"Conversation so far:\n{history_text}\n\n" if history_text else "")
+            + f"New question: {question}"
+        )
 
     if override_system is not None:
         system = override_system
     if override_user is not None:
         user_content = override_user
-        user_content = (
-            (f"Conversation so far:\n{history_text}\n\n" if history_text else "")
-            + f"New question: {question}"
-        )
 
     chosen_model = answer_model or os.environ.get("GRAPHIFY_ANSWER_MODEL", "claude-sonnet-4-6")
     kwargs: dict[str, Any] = {
