@@ -462,26 +462,24 @@ function ArtifactView({
   return (
     <div className="pb-final-brief">
       <header className="pb-final-brief-head">
-        <div>
-          <span className="muted-note" style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 0.05 }}>
-            {typeLabel}
-          </span>
+        <div className="art-head-left">
+          <div className="art-eyebrow">{typeLabel}</div>
           {renamingTitle == null ? (
             <h2 className="art-title-editable">
               <span
                 className="art-title-text"
                 onDoubleClick={startRename}
-                title="Double-click to rename, or use the ✎ Rename button"
+                title="Double-click to rename"
               >
                 {artifact.title || "Untitled"}
               </span>
               <button
                 className="art-title-edit-btn"
                 onClick={startRename}
-                title="Rename this artifact"
+                title="Rename"
                 aria-label="Rename"
               >
-                ✎ Rename
+                ✎
               </button>
             </h2>
           ) : (
