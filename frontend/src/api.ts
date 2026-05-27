@@ -795,6 +795,11 @@ export const api = {
       body: JSON.stringify(body),
     }),
 
+  resyncArtifactFromConversation: (artId: string) =>
+    jsonRequest<Artifact>(`/api/artifacts/${artId}/resync-from-conversation`, {
+      method: "POST",
+    }),
+
   // --- influence explainer ("Why this answer?") ---
   explainTurnInfluence: (convId: string, turnIdx: number) =>
     jsonRequest<TurnInfluence>(

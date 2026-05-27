@@ -2264,6 +2264,74 @@ def artifacts_refine(
     return art
 
 
+def _split_report_markdown(md: str) -> tuple[str, str]:
+    """Extract a one-paragraph TL;DR from the exec-export markdown.
+
+    Tolerant: handles both `## TL;DR\\n<para>` and `**TL;DR:** <para>` shapes
+    produced by GRAPHIFY_EXPORT_MODEL. Returns (tldr, raw_markdown) — the raw
+    markdown is returned unchanged so the body renders verbatim.
+    """
+    import re as _re
+    if not md:
+        return ("", "")
+    # Case 1: explicit "**TL;DR:** ..." in the body.
+    m = _re.search(r"\*\*TL;DR[:\s]+\*\*\s*(.+?)(?=\n\n|\n#|$)", md, _re.DOTALL | _re.IGNORECASE)
+    if m:
+        return (m.group(1).strip()[:400], md)
+    # Case 2: "## TL;DR" or "# TL;DR" heading followed by a paragraph.
+    m = _re.search(r"^#{1,3}\s*TL;DR\s*\n+(.+?)(?=\n\n|\n#|$)", md, _re.MULTILINE | _re.DOTALL | _re.IGNORECASE)
+    if m:
+        return (m.group(1).strip()[:400], md)
+    # Fallback: first non-heading paragraph.
+    for para in _re.split(r"\n\n+", md):
+        para = para.strip()
+        if not para or para.startswith("#"):
+            continue
+        return (para[:400], md)
+    return ("", md)
+
+
+@app.post("/api/artifacts/{art_id}/resync-from-conversation")
+def artifacts_resync_from_conversation(
+    art_id: str, ws: Workspace = Depends(active_workspace),
+) -> dict:
+    """Re-run the conversation export and append the fresh report as a new
+    version of the artifact. The artifact must have been created from a
+    conversation (provenance.conversation_id required)."""
+    import time as _time
+    from datetime import datetime as _dt
+
+    art = artifacts.get_artifact(ws, art_id)
+    if not art:
+        raise HTTPException(status_code=404, detail="artifact not found")
+    conv_id = (art.get("provenance") or {}).get("conversation_id")
+    if not conv_id:
+        raise HTTPException(
+            status_code=400,
+            detail="This artifact is not linked to a conversation. Re-sync needs provenance.conversation_id.",
+        )
+    conv = conv_store.get_conversation(ws, conv_id)
+    if not conv:
+        raise HTTPException(status_code=404, detail=f"source conversation {conv_id} not found")
+    if not conv.get("turns"):
+        raise HTTPException(status_code=400, detail="source conversation has no turns to export")
+
+    fresh_md = _export_executive_markdown(conv)
+    tldr, raw_md = _split_report_markdown(fresh_md)
+    stamp = _dt.fromtimestamp(_time.time()).strftime("%Y-%m-%d %H:%M")
+    updated = artifacts.add_version(
+        ws,
+        art_id,
+        tldr=tldr,
+        sections={},
+        raw_markdown=raw_md,
+        summary=f"Re-synced from conversation {stamp}",
+    )
+    if not updated:
+        raise HTTPException(status_code=500, detail="failed to write new version")
+    return updated
+
+
 # --- Static frontend --------------------------------------------------------
 # Built React assets land in frontend/dist. If the build doesn't exist yet
 # (e.g. backend is started before `npm run build`), the API still works on its own.

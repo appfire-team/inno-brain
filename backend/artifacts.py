@@ -38,6 +38,7 @@ ARTIFACT_TYPES: dict[str, str] = {
     "KBHealthReport": "KB freshness audit",
     # Free-form artifacts pushed in from Conversations / ForeSight / manual
     "ConversationNote": "Conversation note",
+    "ConversationReport": "Conversation report",
     "ForesightBrief": "Foresight brief",
     "FreeformNote": "Free-form note",
     # Brownfield AI-led development chain (agent-skills grounded)

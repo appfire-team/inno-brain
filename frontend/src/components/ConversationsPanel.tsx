@@ -250,6 +250,45 @@ export function ConversationsPanel({ onNodeClick, wideMode, onToggleWideMode, on
     URL.revokeObjectURL(url);
   };
 
+  // Pull the same exec-Markdown export the download button uses, then save it
+  // as a ConversationReport artifact with the conversation id in provenance.
+  // The artifact's "↻ Re-sync from conversation" button uses that link to push
+  // a new version when the conversation grows.
+  const [savingReport, setSavingReport] = useState(false);
+  const sendReportToArtifact = async () => {
+    if (!active || savingReport) return;
+    setSavingReport(true);
+    try {
+      const exported = await api.exportConversation(active.id);
+      const md = exported.markdown || "";
+      // Extract a short TL;DR from the markdown for the artifact hero.
+      const tldrMatch =
+        md.match(/\*\*TL;DR[:\s]+\*\*\s*(.+?)(?=\n\n|\n#|$)/is) ||
+        md.match(/^#{1,3}\s*TL;DR\s*\n+(.+?)(?=\n\n|\n#|$)/im);
+      const tldr = (tldrMatch?.[1] ?? md.split(/\n\n+/).find((p) => p.trim() && !p.startsWith("#")) ?? "")
+        .trim()
+        .slice(0, 400);
+      const title = (active.title || "Conversation report").slice(0, 80);
+      const art = await api.createArtifact({
+        artifact_type: "ConversationReport",
+        title,
+        tldr,
+        sections: {},
+        raw_markdown: md,
+        provenance: {
+          conversation_id: active.id,
+          source_conversation_title: active.title,
+          source: "conversation_report",
+        },
+      });
+      onNotify?.("success", `Saved report → Artifacts: "${art.title}"`);
+    } catch (e) {
+      onNotify?.("error", `Save report failed: ${(e as Error).message}`);
+    } finally {
+      setSavingReport(false);
+    }
+  };
+
   const sendTurnToArtifact = async (
     answer: Extract<Turn, { role: "assistant" }>,
     userQuestion: string,
@@ -486,6 +525,14 @@ export function ConversationsPanel({ onNodeClick, wideMode, onToggleWideMode, on
                 <span className="muted-note">{active.turns.length} turns · {active.pins.length} pinned</span>
                 <button className="btn-secondary small" onClick={doExport} disabled={active.turns.length === 0}>
                   Export report
+                </button>
+                <button
+                  className="btn-secondary small"
+                  onClick={sendReportToArtifact}
+                  disabled={active.turns.length === 0 || savingReport}
+                  title="Run the same exec-Markdown export, save it as a Conversation report artifact, and link it back to this thread for re-sync"
+                >
+                  {savingReport ? <><span className="spinner" /> Saving…</> : "📎 Save report as artifact"}
                 </button>
                 <button
                   className="btn-secondary small"

@@ -262,6 +262,22 @@ function ArtifactView({
   const [renamingTitle, setRenamingTitle] = useState<string | null>(null);
   const [renameSaving, setRenameSaving] = useState(false);
   const [influenceOpen, setInfluenceOpen] = useState(false);
+  const [resyncing, setResyncing] = useState(false);
+
+  const conversationLinkId = (artifact.provenance as { conversation_id?: string } | undefined)?.conversation_id;
+  const resyncFromConversation = useCallback(async () => {
+    if (!conversationLinkId || resyncing) return;
+    setResyncing(true);
+    try {
+      await api.resyncArtifactFromConversation(artifact.id);
+      onChanged();
+      notify?.("success", "Re-synced from conversation — added as a new version.");
+    } catch (e) {
+      notify?.("error", `Re-sync failed: ${(e as Error).message}`);
+    } finally {
+      setResyncing(false);
+    }
+  }, [artifact.id, conversationLinkId, resyncing, onChanged, notify]);
 
   const startRename = () => setRenamingTitle(artifact.title || "");
   const cancelRename = () => setRenamingTitle(null);
@@ -548,6 +564,16 @@ function ArtifactView({
               title="Show what shaped this brief — rubric, memory, cross-step convergence"
             >
               🔍 Why?
+            </button>
+          )}
+          {conversationLinkId && (
+            <button
+              className="btn-secondary small"
+              onClick={resyncFromConversation}
+              disabled={resyncing}
+              title="Re-run the conversation export and add the fresh report as a new version"
+            >
+              {resyncing ? <><span className="spinner" /> Re-syncing…</> : "↻ Re-sync from conversation"}
             </button>
           )}
           <button
