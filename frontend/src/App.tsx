@@ -35,13 +35,39 @@ type Toast = { kind: "success" | "error" | "info"; message: string } | null;
 
 const EXEC_MODE_KEY = "innobrain.execMode";
 
+// Deep-link params. The artifact viewer's "🔗 Copy link" button builds a URL
+// of the form ?ws=<workspace-id>&tab=artifacts&artifact=<artifact-id>; we
+// parse them here once on mount so a teammate clicking that link lands on the
+// right workspace, tab, and artifact without manual navigation.
+const VALID_TABS: Tab[] = [
+  "playbooks", "ask", "conversations", "foresight", "artifacts",
+  "graph", "communities", "insights", "path", "refine", "guide",
+];
+function parseDeepLink(): { ws: string | null; tab: Tab | null; artifact: string | null } {
+  if (typeof window === "undefined") return { ws: null, tab: null, artifact: null };
+  const p = new URLSearchParams(window.location.search);
+  const ws = p.get("ws");
+  const tabRaw = p.get("tab");
+  const tab = tabRaw && (VALID_TABS as string[]).includes(tabRaw) ? (tabRaw as Tab) : null;
+  const artifact = p.get("artifact");
+  return { ws, tab, artifact };
+}
+
 export function App() {
+  // Resolved once per mount — URL drives initial tab + workspace + artifact.
+  const deepLink = useRef(parseDeepLink());
   const [activeWorkspace, setActiveWorkspaceState] = useState<WorkspaceSummary | null>(null);
   const [stats, setStats] = useState<Stats | null>(null);
   const [docs, setDocs] = useState<UploadedFile[]>([]);
   const [repos, setRepos] = useState<IngestedRepo[]>([]);
   const [insights, setInsights] = useState<Insights | null>(null);
-  const [tab, setTab] = useState<Tab>("conversations");
+  const [tab, setTab] = useState<Tab>(deepLink.current.tab ?? "conversations");
+  // One-shot: ArtifactsPanel reads this on first mount to focus the linked
+  // artifact, then we clear it so later workspace switches don't keep
+  // re-applying the original deep-link target.
+  const [initialArtifactId, setInitialArtifactId] = useState<string | null>(
+    deepLink.current.artifact,
+  );
   const [askPrefill, setAskPrefill] = useState<string>("");
   const [uploading, setUploading] = useState(false);
   const [toast, setToast] = useState<Toast>(null);
@@ -96,8 +122,16 @@ export function App() {
     return raw === "1";
   });
   // When entering Exec mode, default to the Playbooks tab — the whole point.
+  // Exception: a deep link with an explicit ?tab=… on initial mount wins,
+  // so a "🔗 Copy link" to an artifact lands you on the artifact, not on
+  // Playbooks just because exec mode is the default.
+  const deepLinkTabHonored = useRef(false);
   useEffect(() => {
     window.localStorage.setItem(EXEC_MODE_KEY, execMode ? "1" : "0");
+    if (!deepLinkTabHonored.current && deepLink.current.tab) {
+      deepLinkTabHonored.current = true;
+      return;
+    }
     if (execMode && tab !== "playbooks") setTab("playbooks");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [execMode]);
@@ -119,11 +153,14 @@ export function App() {
   }, []);
 
   // Resolve the active workspace on mount (or whenever it changes via the switcher).
+  // Preference order: ?ws=<id> from the URL (deep link) → localStorage → first.
   const refreshWorkspace = useCallback(async () => {
     try {
       const { workspaces } = await api.workspaces();
       const stored = getActiveWorkspaceId();
-      let active = workspaces.find((w) => w.id === stored) ?? workspaces[0] ?? null;
+      const linkWs = deepLink.current.ws;
+      const linkMatch = linkWs ? workspaces.find((w) => w.id === linkWs) : null;
+      const active = linkMatch ?? workspaces.find((w) => w.id === stored) ?? workspaces[0] ?? null;
       if (active && stored !== active.id) setActiveWorkspaceId(active.id);
       setActiveWorkspaceState(active);
     } catch (e) {
@@ -664,7 +701,11 @@ export function App() {
             />
           )}
           {tab === "artifacts" && (
-            <ArtifactsPanel onNotify={(kind, message) => setToast({ kind, message })} />
+            <ArtifactsPanel
+              onNotify={(kind, message) => setToast({ kind, message })}
+              initialArtifactId={initialArtifactId}
+              onInitialArtifactConsumed={() => setInitialArtifactId(null)}
+            />
           )}
           {tab === "graph" && (
             <GraphPanel onNodeClick={openNode} focusedCommunity={focusedCommunity} />

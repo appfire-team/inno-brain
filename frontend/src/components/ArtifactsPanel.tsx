@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   api,
+  getActiveWorkspaceId,
   type Artifact,
   type ArtifactComment,
   type ArtifactHighlight,
@@ -35,9 +36,16 @@ type ToastNotify = (kind: "success" | "error" | "info", msg: string) => void;
 
 type Props = {
   onNotify?: ToastNotify;
+  /** Deep-link target. If set on mount, the panel selects this artifact id
+   * as soon as the list loads. Used by the App-level URL parser when a user
+   * arrives via a "🔗 Copy link" deep link. */
+  initialArtifactId?: string | null;
+  /** Called once the panel has consumed initialArtifactId so the parent can
+   * clear it and avoid re-applying on workspace switches. */
+  onInitialArtifactConsumed?: () => void;
 };
 
-export function ArtifactsPanel({ onNotify }: Props) {
+export function ArtifactsPanel({ onNotify, initialArtifactId, onInitialArtifactConsumed }: Props) {
   const [list, setList] = useState<ArtifactSummary[]>([]);
   const [types, setTypes] = useState<Record<string, string>>({});
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -46,6 +54,7 @@ export function ArtifactsPanel({ onNotify }: Props) {
   const [viewerLoading, setViewerLoading] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
   const [createOpen, setCreateOpen] = useState(false);
+  const consumedInitialRef = useRef(false);
 
   const notify = useCallback<ToastNotify>((kind, msg) => {
     if (onNotify) onNotify(kind, msg);
@@ -102,6 +111,27 @@ export function ArtifactsPanel({ onNotify }: Props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [grouped]);
+
+  // Deep-link consumption: when initialArtifactId is set AND the list has
+  // loaded with that id, select it. One-shot — we then notify the parent so
+  // it can clear the prop and not re-apply on workspace switches.
+  useEffect(() => {
+    if (consumedInitialRef.current) return;
+    if (!initialArtifactId) return;
+    if (list.length === 0) return;
+    const found = list.some((a) => a.id === initialArtifactId);
+    if (found) {
+      setSelectedId(initialArtifactId);
+      consumedInitialRef.current = true;
+      onInitialArtifactConsumed?.();
+    } else {
+      // Artifact id present in URL but not in this workspace's artifacts —
+      // notify so the deep link doesn't leave the user on a blank panel forever.
+      consumedInitialRef.current = true;
+      onInitialArtifactConsumed?.();
+      notify("error", "Linked artifact not found in this workspace.");
+    }
+  }, [initialArtifactId, list, notify, onInitialArtifactConsumed]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this artifact? This cannot be undone.")) return;
@@ -263,6 +293,26 @@ function ArtifactView({
   const [renameSaving, setRenameSaving] = useState(false);
   const [influenceOpen, setInfluenceOpen] = useState(false);
   const [resyncing, setResyncing] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+
+  const copyDeepLink = useCallback(async () => {
+    const ws = getActiveWorkspaceId();
+    if (!ws) {
+      notify?.("error", "No active workspace — can't build a link.");
+      return;
+    }
+    const params = new URLSearchParams({ ws, tab: "artifacts", artifact: artifact.id });
+    const url = `${window.location.origin}/?${params.toString()}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setLinkCopied(true);
+      notify?.("success", "Link copied — paste it to anyone with access to this app.");
+      setTimeout(() => setLinkCopied(false), 2000);
+    } catch {
+      // Some browsers gate clipboard. Fall back to selecting in a prompt.
+      window.prompt("Copy this link:", url);
+    }
+  }, [artifact.id, notify]);
 
   const conversationLinkId = (artifact.provenance as { conversation_id?: string } | undefined)?.conversation_id;
   const resyncFromConversation = useCallback(async () => {
@@ -555,6 +605,13 @@ function ArtifactView({
               ))}
             </select>
           )}
+          <button
+            className="btn-secondary small"
+            onClick={copyDeepLink}
+            title="Copy a link to this artifact — paste it to any app user to open this exact view"
+          >
+            {linkCopied ? "✓ Copied" : "🔗 Copy link"}
+          </button>
           {artifact.provenance?.playbook_run_id && (
             <button
               className="btn-secondary small"
