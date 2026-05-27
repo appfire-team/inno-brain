@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { api, type Conversation, type ConversationSummary, type ModelOption, type Pin, type Rubric, type Turn } from "../api";
+import { api, type Conversation, type ConversationSummary, type InfluenceLever, type ModelOption, type Pin, type Rubric, type Turn } from "../api";
 import type { RefinePrefill } from "./RefineKBPanel";
 import { RubricManager } from "./RubricManager";
 import { MemoryDrawer } from "./MemoryDrawer";
 import { MarkdownView } from "./MarkdownView";
 import { SimulationView } from "./SimulationView";
 import { IntentSelect } from "./IntentSelect";
+import { InfluenceDrawer } from "./InfluenceDrawer";
 import { useCollapsed } from "../hooks/useCollapsed";
 
 const INFERENCE_LABELS: Record<string, string> = {
@@ -47,6 +48,7 @@ export function ConversationsPanel({ onNodeClick, wideMode, onToggleWideMode, on
   const [pinsCollapsed, togglePins] = useCollapsed("conv-pins", false);
   const [hideDiagnostics, toggleDiagnostics] = useCollapsed("conv-hide-diagnostics", false);
   const [activeTurnIdx, setActiveTurnIdx] = useState<number | null>(null);
+  const [influenceTurnIdx, setInfluenceTurnIdx] = useState<number | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
   const [exportText, setExportText] = useState<string | null>(null);
   const [intents, setIntents] = useState<Record<string, string>>({});
@@ -170,6 +172,31 @@ export function ConversationsPanel({ onNodeClick, wideMode, onToggleWideMode, on
       setSending(false);
     }
   };
+
+  /** Apply a lever from the InfluenceDrawer: patch conv settings, then re-ask
+   * the same question. The drawer closes itself afterward; we update the
+   * conversation view as the new turn arrives. */
+  const applyInfluenceLever = useCallback(async (lever: InfluenceLever, question: string) => {
+    if (!active || sending) return;
+    const settings = (lever.change?.settings ?? {}) as Parameters<typeof api.updateConversationSettings>[1];
+    setSending(true);
+    try {
+      // Optimistic settings update — the PATCH response is the full conv.
+      const afterSettings = await api.updateConversationSettings(active.id, settings);
+      setActive({
+        ...afterSettings,
+        turns: [...afterSettings.turns, { role: "user", text: question, ts: Date.now() / 1000 } as Turn],
+      });
+      const afterTurn = await api.addTurn(active.id, question);
+      setActive(afterTurn);
+      await reloadList();
+      onNotify?.("info", `Re-ran with: ${lever.label}`);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setSending(false);
+    }
+  }, [active, sending, onNotify]);
 
   const deleteConv = async (id: string) => {
     if (!confirm("Delete this conversation?")) return;
@@ -500,6 +527,7 @@ export function ConversationsPanel({ onNodeClick, wideMode, onToggleWideMode, on
                   <div key={i} id={`turn-${active.id}-${i}`}>
                     <TurnView
                       turn={t}
+                      turnIdx={i}
                       onNodeClick={onNodeClick}
                       onPinAnswer={() => t.role === "assistant" && pinAnswer(t)}
                       onPinNode={pinNode}
@@ -508,6 +536,9 @@ export function ConversationsPanel({ onNodeClick, wideMode, onToggleWideMode, on
                         t.role === "assistant"
                           ? () => sendTurnToArtifact(t, priorUser)
                           : undefined
+                      }
+                      onExplainInfluence={
+                        t.role === "assistant" ? () => setInfluenceTurnIdx(i) : undefined
                       }
                     />
                   </div>
@@ -638,6 +669,14 @@ export function ConversationsPanel({ onNodeClick, wideMode, onToggleWideMode, on
 
       {showRubrics && <RubricManager open onClose={() => { setShowRubrics(false); reloadIntentsRubrics(); }} />}
       {showMemory && <MemoryDrawer open onClose={() => setShowMemory(false)} />}
+      {active && influenceTurnIdx != null && (
+        <InfluenceDrawer
+          open
+          target={{ kind: "turn", conversationId: active.id, turnIdx: influenceTurnIdx }}
+          onClose={() => setInfluenceTurnIdx(null)}
+          onApplyLever={applyInfluenceLever}
+        />
+      )}
       {exportOpen && (
         <ExportModal
           markdown={exportText}
@@ -802,18 +841,22 @@ function ExportModal({
 
 function TurnView({
   turn,
+  turnIdx: _turnIdx,
   onNodeClick,
   onPinAnswer,
   onPinNode,
   onSaveAsKBFact,
   onSendToArtifact,
+  onExplainInfluence,
 }: {
   turn: Turn;
+  turnIdx: number;
   onNodeClick: (label: string) => void;
   onPinAnswer: () => void;
   onPinNode: (nodeId: string, label: string) => void;
   onSaveAsKBFact?: (prefill: RefinePrefill) => void;
   onSendToArtifact?: () => void | Promise<void>;
+  onExplainInfluence?: () => void;
 }) {
   if (turn.role === "user") {
     return (
@@ -852,6 +895,15 @@ function TurnView({
           <span className="grounding-badge memory" title="Persistent memory was injected">memory</span>
         )}
         <button className="link-btn small" onClick={onPinAnswer}>+ pin answer</button>
+        {onExplainInfluence && (
+          <button
+            className="link-btn small"
+            title="Show what shaped this answer + what to change to get a different one"
+            onClick={onExplainInfluence}
+          >
+            🔍 Why?
+          </button>
+        )}
         {onSendToArtifact && (
           <button
             className="link-btn small"

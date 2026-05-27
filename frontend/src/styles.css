@@ -1952,6 +1952,116 @@ button.library-row:hover { background: var(--panel-2); }
   margin: 0 0 10px;
 }
 .error-text { color: var(--danger); }
+
+/* --- Influence drawer ("Why this answer?") ------------------------------ */
+.influence-drawer .drawer-body { font-size: 13px; }
+.influence-summary p {
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--panel-soft, rgba(99, 102, 241, 0.08));
+  border-left: 3px solid var(--accent, #6366f1);
+  border-radius: 4px;
+  line-height: 1.45;
+}
+.influence-convergence {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: rgba(251, 191, 36, 0.10);
+  border-left: 3px solid #f59e0b;
+  border-radius: 4px;
+}
+.influence-convergence-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #b45309;
+  margin-bottom: 4px;
+}
+.influence-convergence-theme { line-height: 1.4; }
+.influence-settings .influence-meta {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.influence-meta strong { color: var(--text); margin-right: 4px; }
+.influence-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.influence-item {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-soft, rgba(255, 255, 255, 0.02));
+}
+.influence-item-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.influence-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--panel-soft, rgba(255, 255, 255, 0.06));
+  color: var(--text-dim);
+}
+.influence-icon { font-size: 12px; }
+.influence-weight {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.influence-weight-high { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+.influence-weight-medium { background: rgba(251, 191, 36, 0.15); color: #fcd34d; }
+.influence-weight-low { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
+.influence-item-label { font-weight: 600; margin-bottom: 4px; }
+.influence-item-evidence { color: var(--text-dim); line-height: 1.4; font-size: 12.5px; }
+.influence-levers-note { margin-bottom: 10px; }
+.influence-levers {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.influence-lever-btn {
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-soft, rgba(255, 255, 255, 0.02));
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.influence-lever-btn:hover:not(:disabled) {
+  border-color: var(--accent, #6366f1);
+  background: rgba(99, 102, 241, 0.08);
+}
+.influence-lever-btn:disabled { opacity: 0.55; cursor: progress; }
+.influence-lever-label { font-weight: 600; margin-bottom: 4px; }
+.influence-lever-effect { color: var(--text-dim); font-size: 12.5px; line-height: 1.4; }
+.influence-note { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
 .neighbor-list {
   list-style: none;
   padding: 0;

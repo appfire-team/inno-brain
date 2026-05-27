@@ -8,6 +8,7 @@ import {
   type PatchSuggestion,
 } from "../api";
 import { MarkdownView } from "./MarkdownView";
+import { InfluenceDrawer } from "./InfluenceDrawer";
 
 const DOC_LEVEL = "__doc__";
 
@@ -260,6 +261,7 @@ function ArtifactView({
   const [patchApplying, setPatchApplying] = useState(false);
   const [renamingTitle, setRenamingTitle] = useState<string | null>(null);
   const [renameSaving, setRenameSaving] = useState(false);
+  const [influenceOpen, setInfluenceOpen] = useState(false);
 
   const startRename = () => setRenamingTitle(artifact.title || "");
   const cancelRename = () => setRenamingTitle(null);
@@ -538,6 +540,15 @@ function ArtifactView({
                 </option>
               ))}
             </select>
+          )}
+          {artifact.provenance?.playbook_run_id && (
+            <button
+              className="btn-secondary small"
+              onClick={() => setInfluenceOpen(true)}
+              title="Show what shaped this brief — rubric, memory, cross-step convergence"
+            >
+              🔍 Why?
+            </button>
           )}
           <button
             className="btn-secondary small"
@@ -845,6 +856,13 @@ function ArtifactView({
           applying={patchApplying}
           onApply={applySuggestion}
           onClose={() => setPatchSuggestion(null)}
+        />
+      )}
+      {influenceOpen && artifact.provenance?.playbook_run_id && (
+        <InfluenceDrawer
+          open
+          target={{ kind: "run", runId: artifact.provenance.playbook_run_id }}
+          onClose={() => setInfluenceOpen(false)}
         />
       )}
     </div>

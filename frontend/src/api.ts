@@ -794,6 +794,62 @@ export const api = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+
+  // --- influence explainer ("Why this answer?") ---
+  explainTurnInfluence: (convId: string, turnIdx: number) =>
+    jsonRequest<TurnInfluence>(
+      `/api/conversations/${convId}/turn/${turnIdx}/explain-influence`,
+    ),
+  explainRunInfluence: (runId: string) =>
+    jsonRequest<RunInfluence>(`/api/playbooks/runs/${runId}/explain-influence`),
+};
+
+export type Influence = {
+  kind: string;
+  id: string;
+  label: string;
+  weight: "high" | "medium" | "low" | string;
+  evidence: string;
+};
+
+export type InfluenceLever = {
+  id: string;
+  label: string;
+  expected_effect: string;
+  /** Each lever describes a settings PATCH the UI applies to the conversation
+   * before re-issuing the same question. Other shapes are reserved. */
+  change: { settings: Record<string, unknown> };
+};
+
+export type TurnInfluence = {
+  turn_idx: number;
+  question: string;
+  answer_preview: string;
+  settings: {
+    intent?: string | null;
+    rubric_id?: string | null;
+    inference_strategy?: string;
+    web_grounding?: boolean;
+    answer_model?: string | null;
+    auto_memory?: boolean;
+  };
+  summary: string;
+  influences: Influence[];
+  levers: InfluenceLever[];
+  raw_signals?: Record<string, unknown>;
+  convergence_theme?: null;
+};
+
+export type RunInfluence = {
+  run_id: string;
+  playbook_id: string;
+  summary: string;
+  convergence_theme?: string | null;
+  influences: Influence[];
+  /** Always empty for runs in v1; reserved for future per-run lever support. */
+  levers: InfluenceLever[];
+  raw_signals?: Record<string, unknown>;
+  note?: string;
 };
 
 export type PlaybookStepTemplate = {

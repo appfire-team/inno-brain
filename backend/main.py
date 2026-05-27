@@ -65,6 +65,7 @@ import playbooks  # noqa: E402
 import intent_store  # noqa: E402
 import playbook_store  # noqa: E402
 import kb_corrections  # noqa: E402
+import influence  # noqa: E402
 
 rubric_store.seed_defaults()
 
@@ -1379,6 +1380,23 @@ def conversations_synthesize_scenarios(
     return {"scenarios": conv_store.synthesize_scenarios(ws, conv_id)}
 
 
+@app.get("/api/conversations/{conv_id}/turn/{turn_idx}/explain-influence")
+def conversations_turn_explain_influence(
+    conv_id: str, turn_idx: int, ws: Workspace = Depends(active_workspace),
+) -> dict:
+    """Score the influences on an assistant turn — which rubric clauses,
+    memory items, graph communities, and web sources pulled the answer
+    where it landed, plus a menu of re-run levers the UI can apply via
+    settings PATCH + new turn POST."""
+    conv = conv_store.get_conversation(ws, conv_id)
+    if not conv:
+        raise HTTPException(status_code=404, detail="conversation not found")
+    try:
+        return influence.score_turn_influence(ws, conv, turn_idx)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+
+
 # --- ForeSight routes -------------------------------------------------------
 
 @app.get("/api/foresight/personas")
@@ -1948,6 +1966,20 @@ def playbooks_run_get(run_id: str, ws: Workspace = Depends(active_workspace)) ->
     if not r:
         raise HTTPException(status_code=404, detail="run not found")
     return r
+
+
+@app.get("/api/playbooks/runs/{run_id}/explain-influence")
+def playbooks_run_explain_influence(
+    run_id: str, ws: Workspace = Depends(active_workspace),
+) -> dict:
+    """Score the cross-step influences on a playbook run — which rubric clauses,
+    memory items, and corpus themes pulled the run's recommendations where they
+    landed. Detects cross-step convergence on a single theme. Read-only — full
+    re-runs go through the Playbooks tab."""
+    r = playbooks.get_run(ws, run_id)
+    if not r:
+        raise HTTPException(status_code=404, detail="run not found")
+    return influence.score_run_influence(ws, r)
 
 
 @app.delete("/api/playbooks/runs/{run_id}")
