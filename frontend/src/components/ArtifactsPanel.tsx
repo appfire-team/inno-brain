@@ -7,7 +7,7 @@ import {
   type ArtifactSummary,
   type PatchSuggestion,
 } from "../api";
-import { MarkdownView } from "./MarkdownView";
+import { InlineMarkdown, MarkdownView } from "./MarkdownView";
 import { InfluenceDrawer } from "./InfluenceDrawer";
 
 const DOC_LEVEL = "__doc__";
@@ -722,7 +722,11 @@ function ArtifactView({
         <div className="pb-brief-prose">
           <div className="pb-hero">
             <div className="pb-hero-eyebrow">TL;DR</div>
-            <div className="pb-hero-tldr">{displayedTldr || <span className="muted-note">No TL;DR set.</span>}</div>
+            <div className="pb-hero-tldr">
+              {displayedTldr
+                ? <InlineMarkdown>{displayedTldr}</InlineMarkdown>
+                : <span className="muted-note">No TL;DR set.</span>}
+            </div>
             {displayedHighlights.length > 0 && (
               <div className="pb-highlights">
                 {displayedHighlights.map((h, i) => (
